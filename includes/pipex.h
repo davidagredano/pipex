@@ -6,7 +6,7 @@
 /*   By: dagredan <dagredan@student.42barcelona.co  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/03 11:37:19 by dagredan          #+#    #+#             */
-/*   Updated: 2025/03/03 17:44:33 by dagredan         ###   ########.fr       */
+/*   Updated: 2025/03/03 17:57:35 by dagredan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 
 # include <stdio.h>  // perror
 # include <stdlib.h> // free, EXIT_FAILURE
+# include <unistd.h> // access
 
 typedef struct s_cmd
 {
