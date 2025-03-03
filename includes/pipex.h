@@ -6,13 +6,14 @@
 /*   By: dagredan <dagredan@student.42barcelona.co  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/03 11:37:19 by dagredan          #+#    #+#             */
-/*   Updated: 2025/03/03 17:15:25 by dagredan         ###   ########.fr       */
+/*   Updated: 2025/03/03 17:44:33 by dagredan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef PIPEX_H
 # define PIPEX_H
 
+# include <stdio.h>  // perror
 # include <stdlib.h> // free, EXIT_FAILURE
 
 typedef struct s_cmd
