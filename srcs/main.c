@@ -1,18 +1,20 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   pipex.h                                            :+:      :+:    :+:   */
+/*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: dagredan <dagredan@student.42barcelona.co  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/03/03 11:37:19 by dagredan          #+#    #+#             */
-/*   Updated: 2025/03/03 11:54:08 by dagredan         ###   ########.fr       */
+/*   Created: 2025/03/03 11:53:33 by dagredan          #+#    #+#             */
+/*   Updated: 2025/03/03 11:53:34 by dagredan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef PIPEX_H
-# define PIPEX_H
+#include "../includes/pipex.h"
 
-# include <stdlib.h> // EXIT_FAILURE
-
-#endif
+int	main(int argc, char *argv[])
+{
+	if (argc != 5)
+		return (EXIT_FAILURE);
+	(void) argv;
+}
