@@ -6,16 +6,17 @@
 /*   By: dagredan <dagredan@student.42barcelona.co  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/03 11:37:19 by dagredan          #+#    #+#             */
-/*   Updated: 2025/03/04 13:08:55 by dagredan         ###   ########.fr       */
+/*   Updated: 2025/03/04 13:48:39 by dagredan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef PIPEX_H
 # define PIPEX_H
 
+# include <fcntl.h>  // open
 # include <stdio.h>  // perror
 # include <stdlib.h> // free, exit, EXIT_FAILURE
-# include <unistd.h> // access, execve
+# include <unistd.h> // access, execve, write
 
 typedef struct s_cmd
 {
