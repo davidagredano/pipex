@@ -6,12 +6,18 @@
 /*   By: dagredan <dagredan@student.42barcelona.co  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/03 12:28:06 by dagredan          #+#    #+#             */
-/*   Updated: 2025/03/04 13:05:37 by dagredan         ###   ########.fr       */
+/*   Updated: 2025/03/04 13:09:03 by dagredan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/pipex.h"
 #include "../libft/libft.h"
+
+void	cmd_exec(t_cmd *cmd)
+{
+	if (execve(cmd->filename, cmd->argv, cmd->envp) == -1)
+		cmd_exit_error(cmd, "Command execution failed");
+}
 
 t_cmd	*cmd_process(char *cmd_str, char **envp)
 {

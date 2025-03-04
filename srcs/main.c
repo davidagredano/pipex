@@ -6,7 +6,7 @@
 /*   By: dagredan <dagredan@student.42barcelona.co  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/03 11:53:33 by dagredan          #+#    #+#             */
-/*   Updated: 2025/03/04 13:03:28 by dagredan         ###   ########.fr       */
+/*   Updated: 2025/03/04 13:09:17 by dagredan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,8 +26,8 @@ int	main(int argc, char *argv[], char *envp[])
 	}
 	cmd1 = cmd_process(argv[2], envp);
 	cmd2 = cmd_process(argv[3], envp);
-	print_cmd(cmd1);
-	print_cmd(cmd2);
+	cmd_exec(cmd1);
+	cmd_exec(cmd2);
 	cmd_free(cmd1);
 	cmd_free(cmd2);
 }
