@@ -6,7 +6,7 @@
 /*   By: dagredan <dagredan@student.42barcelona.co  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/03 11:53:33 by dagredan          #+#    #+#             */
-/*   Updated: 2025/03/05 18:28:42 by dagredan         ###   ########.fr       */
+/*   Updated: 2025/03/06 14:36:00 by dagredan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@ int	main(int argc, char *argv[], char *envp[])
 	t_cmd	*cmd;
 	int		pipefd[2];
 	int		fd;
+	int		wstatus;
 
 	if (argc != 5)
 		return (EXIT_FAILURE);
@@ -50,5 +51,9 @@ int	main(int argc, char *argv[], char *envp[])
 		execve(cmd->filename, cmd->argv, cmd->envp);
 	}
 	close(pipefd[0]);
-	wait(NULL);
+	wait(&wstatus);
+	// Return the last command status code if it terminated normally.
+	if (WIFEXITED(wstatus))
+		return (WEXITSTATUS(wstatus));
+	return (EXIT_FAILURE);
 }
