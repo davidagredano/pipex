@@ -6,7 +6,7 @@
 /*   By: dagredan <dagredan@student.42barcelona.co  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/03 12:28:06 by dagredan          #+#    #+#             */
-/*   Updated: 2025/03/04 17:24:03 by dagredan         ###   ########.fr       */
+/*   Updated: 2025/03/06 17:54:02 by dagredan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,13 +48,21 @@ t_cmd	*cmd_process(char *cmd_str, char **envp)
 
 	cmd = ft_calloc(1, sizeof(t_cmd));
 	if (!cmd)
-		cmd_exit_error(cmd, "Command struct allocation failed");
+		exit(EXIT_FAILURE);
 	cmd->envp = envp;
 	cmd->argv = ft_split(cmd_str, ' ');
 	if (!cmd->argv)
-		cmd_exit_error(cmd, "Error during cmd->argv allocation");
+	{
+		cmd_free(cmd);
+		exit(EXIT_FAILURE);
+	}
 	cmd->filename = cmd_get_filename(cmd);
 	if (!cmd->filename)
-		cmd_exit_error(cmd, "Error during cmd->filename allocation");
+		cmd->filename = ft_strdup(cmd_str);
+	if (!cmd->filename)
+	{
+		cmd_free(cmd);
+		exit(EXIT_FAILURE);
+	}
 	return (cmd);
 }

@@ -6,12 +6,14 @@
 /*   By: dagredan <dagredan@student.42barcelona.co  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/03 11:37:19 by dagredan          #+#    #+#             */
-/*   Updated: 2025/03/04 17:15:44 by dagredan         ###   ########.fr       */
+/*   Updated: 2025/03/06 17:39:48 by dagredan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef PIPEX_H
 # define PIPEX_H
+
+# define EXIT_COMMAND_NOT_FOUND 127
 
 # include <fcntl.h>    // open
 # include <stdio.h>    // perror

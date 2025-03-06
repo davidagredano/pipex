@@ -6,7 +6,7 @@
 /*   By: dagredan <dagredan@student.42barcelona.co  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/03 11:53:33 by dagredan          #+#    #+#             */
-/*   Updated: 2025/03/06 16:12:45 by dagredan         ###   ########.fr       */
+/*   Updated: 2025/03/06 17:56:18 by dagredan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,13 @@ int	main(int argc, char *argv[], char *envp[])
 		dup2(pipefd[1], STDOUT_FILENO);
 		close(pipefd[1]);
 		// Execute the command
-		execve(cmd->filename, cmd->argv, cmd->envp);
+		if (execve(cmd->filename, cmd->argv, cmd->envp) == -1)
+		{
+			// If execve fail, print error and manually free memory
+			dprintf(STDERR_FILENO, "%s: command not found\n", argv[2]);
+			cmd_free(cmd);
+			exit(EXIT_COMMAND_NOT_FOUND);
+		}
 	}
 	close(pipefd[1]);
 	wait(NULL);
@@ -61,7 +67,14 @@ int	main(int argc, char *argv[], char *envp[])
 		}
 		dup2(fd, STDOUT_FILENO);
 		close(fd);
-		execve(cmd->filename, cmd->argv, cmd->envp);
+		// Execute the command
+		if (execve(cmd->filename, cmd->argv, cmd->envp) == -1)
+		{
+			// If execve fail, print error and manually free memory
+			dprintf(STDERR_FILENO, "%s: command not found\n", argv[3]);
+			cmd_free(cmd);
+			exit(EXIT_COMMAND_NOT_FOUND);
+		}
 	}
 	close(pipefd[0]);
 	wait(&wstatus);
