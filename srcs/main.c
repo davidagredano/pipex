@@ -6,7 +6,7 @@
 /*   By: dagredan <dagredan@student.42barcelona.co  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/03 11:53:33 by dagredan          #+#    #+#             */
-/*   Updated: 2025/03/06 15:48:19 by dagredan         ###   ########.fr       */
+/*   Updated: 2025/03/06 16:12:45 by dagredan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,6 +52,13 @@ int	main(int argc, char *argv[], char *envp[])
 		dup2(pipefd[0], STDIN_FILENO);
 		close(pipefd[0]);
 		fd = open(argv[4], O_WRONLY | O_TRUNC | O_CREAT, 0644);
+		if (fd == -1)
+		{
+			// If outfile open fail, exit this process
+			perror(argv[4]);
+			cmd_free(cmd);
+			exit(EXIT_FAILURE);
+		}
 		dup2(fd, STDOUT_FILENO);
 		close(fd);
 		execve(cmd->filename, cmd->argv, cmd->envp);
