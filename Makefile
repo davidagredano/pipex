@@ -12,7 +12,7 @@ RMDIR = rm -rf
 
 NAME = pipex
 SRCS_DIR = srcs
-SRCS = main.c commands.c commands_utils.c utils.c debug.c
+SRCS = main.c commands.c utils.c debug.c
 BUILD_DIR = build
 OBJS = $(SRCS:%.c=$(BUILD_DIR)/%.o)
 DEPS = $(SRCS:%.c=$(BUILD_DIR)/%.d)

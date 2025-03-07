@@ -6,7 +6,7 @@
 /*   By: dagredan <dagredan@student.42barcelona.co  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/03 11:37:19 by dagredan          #+#    #+#             */
-/*   Updated: 2025/03/06 17:39:48 by dagredan         ###   ########.fr       */
+/*   Updated: 2025/03/07 17:29:39 by dagredan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,14 +29,12 @@ typedef struct s_cmd
 }		t_cmd;
 
 /* Commands */
-t_cmd	*cmd_process(char *cmd_str, char **envp);
-void	cmd_exec(t_cmd *cmd, char *infile, char *outfile);
-char	*cmd_get_filename(t_cmd *cmd);
+char	*cmd_get_filename(char *cmd_name, char **envp);
 void	cmd_free(t_cmd *cmd);
-void	cmd_exit_error(t_cmd *cmd, const char *error_msg);
 
 /* Utils */
 void	free_strs(char **strs);
+int		cleanup(int pipefd[2], pid_t pids[2]);
 
 /* Debug */
 void	print_cmd(t_cmd *cmd);

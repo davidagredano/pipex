@@ -6,84 +6,116 @@
 /*   By: dagredan <dagredan@student.42barcelona.co  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/03 11:53:33 by dagredan          #+#    #+#             */
-/*   Updated: 2025/03/07 13:58:22 by dagredan         ###   ########.fr       */
+/*   Updated: 2025/03/07 17:45:48 by dagredan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/pipex.h"
+#include "../libft/libft.h"
 
-int	main(int argc, char *argv[], char *envp[])
+static void	process_execute(t_cmd *cmd)
+{
+	if (execve(cmd->filename, cmd->argv, cmd->envp) == -1)
+	{
+		cmd_free(cmd);
+		exit(EXIT_FAILURE);
+	}
+}
+
+static t_cmd	*cmd_create(char *cmd_str, char **envp)
 {
 	t_cmd	*cmd;
-	int		pipefd[2];
-	int		fd;
-	pid_t	pid[2];
-	int		wstatus;
 
-	if (argc != 5)
-		return (EXIT_FAILURE);
-	pipe(pipefd);
-	pid[0] = fork();
-	if (pid[0] == 0)
+	cmd = ft_calloc(1, sizeof(t_cmd));
+	if (!cmd)
+		exit(EXIT_FAILURE);
+	cmd->envp = envp;
+	cmd->argv = ft_split(cmd_str, ' ');
+	if (!cmd->argv)
 	{
-		cmd = cmd_process(argv[2], envp);
-		// Close read end of pipe not used by this subprocess
-		close(pipefd[0]);
-		// Try to open infile
-		fd = open(argv[1], O_RDONLY);
-		if (fd == -1)
-		{
-			// If infile open fail, set infile to be /dev/null
-			perror(argv[1]);
-			fd = open("/dev/null", O_RDONLY);
-		}
-		// Set the opened file to be the stdin
-		dup2(fd, STDIN_FILENO);
-		close(fd);
-		// Set the write end of the pipe to be the stdout
-		dup2(pipefd[1], STDOUT_FILENO);
-		close(pipefd[1]);
-		// Execute the command
-		if (execve(cmd->filename, cmd->argv, cmd->envp) == -1)
-		{
-			// If execve fail, print error and manually free memory
-			dprintf(STDERR_FILENO, "%s: command not found\n", argv[2]);
-			cmd_free(cmd);
-			exit(EXIT_COMMAND_NOT_FOUND);
-		}
+		cmd_free(cmd);
+		exit(EXIT_FAILURE);
 	}
-	pid[1] = fork();
-	if (pid[1] == 0)
+	cmd->filename = cmd_get_filename(cmd->argv[0], envp);
+	if (!cmd->filename)
 	{
-		cmd = cmd_process(argv[3], envp);
-		dup2(pipefd[0], STDIN_FILENO);
-		close(pipefd[0]);
-		fd = open(argv[4], O_WRONLY | O_TRUNC | O_CREAT, 0644);
+		cmd_free(cmd);
+		exit(EXIT_FAILURE);
+	}
+	if (ft_strcmp(cmd->filename, "command not found") == 0)
+	{
+		dprintf(STDERR_FILENO, "%s: command not found\n", cmd->argv[0]);
+		cmd_free(cmd);
+		exit(EXIT_COMMAND_NOT_FOUND);
+	}
+	return (cmd);
+}
+
+static void	process_redirect_stdout(int pipe[2], char *outfile)
+{
+	int	fd;
+
+	if (outfile)
+	{
+		fd = open(outfile, O_WRONLY | O_TRUNC | O_CREAT, 0644);
 		if (fd == -1)
 		{
-			// If outfile open fail, exit this process
-			perror(argv[4]);
-			cmd_free(cmd);
+			perror(outfile);
 			exit(EXIT_FAILURE);
 		}
 		dup2(fd, STDOUT_FILENO);
 		close(fd);
-		close(pipefd[1]);
-		// Execute the command
-		if (execve(cmd->filename, cmd->argv, cmd->envp) == -1)
-		{
-			// If execve fail, print error and manually free memory
-			dprintf(STDERR_FILENO, "%s: command not found\n", argv[3]);
-			cmd_free(cmd);
-			exit(EXIT_COMMAND_NOT_FOUND);
-		}
 	}
-	close(pipefd[0]);
-	close(pipefd[1]);
-	waitpid(pid[0], NULL, 0);
-	waitpid(pid[1], &wstatus, 0);
-	// Return the last command status code if it terminated normally.
-	if (WIFEXITED(wstatus))
-		return (WEXITSTATUS(wstatus));
+	else
+		dup2(pipe[1], STDOUT_FILENO);
+	close(pipe[1]);
+}
+
+static void	process_redirect_stdin(int pipe[2], char *infile)
+{
+	int	fd;
+
+	if (infile)
+	{
+		fd = open(infile, O_RDONLY);
+		if (fd == -1)
+		{
+			perror(infile);
+			fd = open("/dev/null", O_RDONLY);
+		}
+		dup2(fd, STDIN_FILENO);
+		close(fd);
+	}
+	else
+		dup2(pipe[0], STDIN_FILENO);
+	close(pipe[0]);
+}
+
+int	main(int argc, char *argv[], char *envp[])
+{
+	int		pipefd[2];
+	pid_t	pids[2];
+	int		last_exit_status;
+
+	if (argc != 5)
+		return (EXIT_FAILURE);
+	pipe(pipefd);
+	pids[0] = fork();
+	if (pids[0] == 0)
+	{
+		process_redirect_stdin(pipefd, argv[1]);
+		process_redirect_stdout(pipefd, NULL);
+		process_execute(cmd_create(argv[2], envp));
+	}
+	pids[1] = fork();
+	if (pids[1] == 0)
+	{
+		process_redirect_stdin(pipefd, NULL);
+		process_redirect_stdout(pipefd, argv[4]);
+		process_execute(cmd_create(argv[3], envp));
+	}
+	last_exit_status = cleanup(pipefd, pids);
+	if (WIFEXITED(last_exit_status))
+		return (WEXITSTATUS(last_exit_status));
 	return (EXIT_FAILURE);
 }
