@@ -6,7 +6,7 @@
 /*   By: dagredan <dagredan@student.42barcelona.co  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/03 11:53:33 by dagredan          #+#    #+#             */
-/*   Updated: 2025/03/06 17:56:18 by dagredan         ###   ########.fr       */
+/*   Updated: 2025/03/07 11:08:39 by dagredan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,12 +17,14 @@ int	main(int argc, char *argv[], char *envp[])
 	t_cmd	*cmd;
 	int		pipefd[2];
 	int		fd;
+	pid_t	pid[2];
 	int		wstatus;
 
 	if (argc != 5)
 		return (EXIT_FAILURE);
 	pipe(pipefd);
-	if (fork() == 0)
+	pid[0] = fork();
+	if (pid[0] == 0)
 	{
 		cmd = cmd_process(argv[2], envp);
 		// Close read end of pipe not used by this subprocess
@@ -51,8 +53,8 @@ int	main(int argc, char *argv[], char *envp[])
 		}
 	}
 	close(pipefd[1]);
-	wait(NULL);
-	if (fork() == 0)
+	pid[1] = fork();
+	if (pid[1] == 0)
 	{
 		cmd = cmd_process(argv[3], envp);
 		dup2(pipefd[0], STDIN_FILENO);
@@ -77,7 +79,8 @@ int	main(int argc, char *argv[], char *envp[])
 		}
 	}
 	close(pipefd[0]);
-	wait(&wstatus);
+	waitpid(pid[0], NULL, 0);
+	waitpid(pid[1], &wstatus, 0);
 	// Return the last command status code if it terminated normally.
 	if (WIFEXITED(wstatus))
 		return (WEXITSTATUS(wstatus));
