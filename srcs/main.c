@@ -6,7 +6,7 @@
 /*   By: dagredan <dagredan@student.42barcelona.co  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/03 11:53:33 by dagredan          #+#    #+#             */
-/*   Updated: 2025/03/07 11:08:39 by dagredan         ###   ########.fr       */
+/*   Updated: 2025/03/07 13:58:22 by dagredan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,6 @@ int	main(int argc, char *argv[], char *envp[])
 			exit(EXIT_COMMAND_NOT_FOUND);
 		}
 	}
-	close(pipefd[1]);
 	pid[1] = fork();
 	if (pid[1] == 0)
 	{
@@ -69,6 +68,7 @@ int	main(int argc, char *argv[], char *envp[])
 		}
 		dup2(fd, STDOUT_FILENO);
 		close(fd);
+		close(pipefd[1]);
 		// Execute the command
 		if (execve(cmd->filename, cmd->argv, cmd->envp) == -1)
 		{
@@ -79,6 +79,7 @@ int	main(int argc, char *argv[], char *envp[])
 		}
 	}
 	close(pipefd[0]);
+	close(pipefd[1]);
 	waitpid(pid[0], NULL, 0);
 	waitpid(pid[1], &wstatus, 0);
 	// Return the last command status code if it terminated normally.
