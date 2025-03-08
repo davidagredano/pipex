@@ -6,7 +6,7 @@
 /*   By: dagredan <dagredan@student.42barcelona.co  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/04 12:40:31 by dagredan          #+#    #+#             */
-/*   Updated: 2025/03/07 17:28:12 by dagredan         ###   ########.fr       */
+/*   Updated: 2025/03/08 11:09:15 by dagredan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,10 +80,9 @@ char	*cmd_get_filename(char *cmd_name, char **envp)
 		candidate = path_join(*path_ptr, cmd_name);
 		if (!candidate)
 			break ;
-		if (access(candidate, X_OK) == 0)
+		else if (access(candidate, X_OK) == 0)
 			break ;
 		free(candidate);
-		candidate = NULL;
 		path_ptr++;
 	}
 	if (*path_ptr == NULL)

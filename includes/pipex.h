@@ -6,7 +6,7 @@
 /*   By: dagredan <dagredan@student.42barcelona.co  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/03 11:37:19 by dagredan          #+#    #+#             */
-/*   Updated: 2025/03/08 10:30:11 by dagredan         ###   ########.fr       */
+/*   Updated: 2025/03/08 12:52:49 by dagredan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@
 # include <fcntl.h>    // open
 # include <stdio.h>    // perror
 # include <stdlib.h>   // exit, free, EXIT_FAILURE
-# include <sys/wait.h> // waitpid
+# include <sys/wait.h> // wait
 # include <unistd.h>   // access, close, dup2, execve, fork, pipe
 
 typedef struct s_cmd
@@ -34,7 +34,9 @@ void	cmd_free(t_cmd *cmd);
 
 /* Utils */
 void	free_strs(char **strs);
-int		cleanup(int pipefd[2], pid_t pids[2]);
+void	cleanup_partial(int pipefd[2]);
+int		cleanup(int pipefd[2]);
+void	perror_exit(char *message, int status);
 
 /* Debug */
 void	print_cmd(t_cmd *cmd);
