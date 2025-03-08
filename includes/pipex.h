@@ -6,7 +6,7 @@
 /*   By: dagredan <dagredan@student.42barcelona.co  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/03 11:37:19 by dagredan          #+#    #+#             */
-/*   Updated: 2025/03/07 17:29:39 by dagredan         ###   ########.fr       */
+/*   Updated: 2025/03/08 10:30:11 by dagredan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,9 +17,9 @@
 
 # include <fcntl.h>    // open
 # include <stdio.h>    // perror
-# include <stdlib.h>   // free, exit, EXIT_FAILURE
-# include <sys/wait.h> // wait
-# include <unistd.h>   // access, execve, write
+# include <stdlib.h>   // exit, free, EXIT_FAILURE
+# include <sys/wait.h> // waitpid
+# include <unistd.h>   // access, close, dup2, execve, fork, pipe
 
 typedef struct s_cmd
 {
