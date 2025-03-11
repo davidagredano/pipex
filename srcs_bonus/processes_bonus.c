@@ -74,7 +74,7 @@ t_proc	**processes_create(int count)
 	while (i < count)
 	{
 		processes[i] = (t_proc *) ft_calloc(1, sizeof(t_proc));
-		if (!processes)
+		if (!processes[i])
 		{
 			processes_free(processes);
 			return (NULL);
