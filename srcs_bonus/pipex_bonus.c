@@ -6,7 +6,7 @@
 /*   By: dagredan <dagredan@student.42barcelona.co  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/10 18:53:21 by dagredan          #+#    #+#             */
-/*   Updated: 2025/03/11 14:19:31 by dagredan         ###   ########.fr       */
+/*   Updated: 2025/03/11 14:33:58 by dagredan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,9 @@ int	pipex_cleanup(t_pipex *data)
 	pipex_free(data);
 	if (wait_ret == -1 || close_ret == -1)
 		exit(EXIT_FAILURE);
-	return (status);
+	if (WIFEXITED(status))
+		return (WEXITSTATUS(status));
+	return (EXIT_FAILURE);
 }
 
 t_pipex	*pipex_create(int argc, char *argv[], char *envp[])

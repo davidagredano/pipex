@@ -6,7 +6,7 @@
 /*   By: dagredan <dagredan@student.42barcelona.co  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/03 11:53:33 by dagredan          #+#    #+#             */
-/*   Updated: 2025/03/11 13:53:21 by dagredan         ###   ########.fr       */
+/*   Updated: 2025/03/11 14:22:42 by dagredan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -102,7 +102,6 @@ int	main(int argc, char *argv[], char *envp[])
 {
 	t_pipex	*data;
 	pid_t	pid;
-	int		last_exit_status;
 	int		i;
 
 	if (argc < 5)
@@ -125,7 +124,5 @@ int	main(int argc, char *argv[], char *envp[])
 		data->active_child_processes++;
 		i++;
 	}
-	last_exit_status = pipex_cleanup(data);
-	if (WIFEXITED(last_exit_status))
-		return (WEXITSTATUS(last_exit_status));
+	return (pipex_cleanup(data));
 }
