@@ -6,7 +6,7 @@
 /*   By: dagredan <dagredan@student.42barcelona.co  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/03 11:53:33 by dagredan          #+#    #+#             */
-/*   Updated: 2025/03/08 12:55:09 by dagredan         ###   ########.fr       */
+/*   Updated: 2025/03/10 19:54:37 by dagredan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ static t_cmd	*cmd_create(char *cmd_str, char **envp)
 {
 	t_cmd	*cmd;
 
-	cmd = ft_calloc(1, sizeof(t_cmd));
+	cmd = (t_cmd *) ft_calloc(1, sizeof(t_cmd));
 	if (!cmd)
 		return (NULL);
 	cmd->envp = envp;
