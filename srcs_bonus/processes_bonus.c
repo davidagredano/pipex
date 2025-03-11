@@ -6,7 +6,7 @@
 /*   By: dagredan <dagredan@student.42barcelona.co  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/10 18:45:33 by dagredan          #+#    #+#             */
-/*   Updated: 2025/03/10 20:28:11 by dagredan         ###   ########.fr       */
+/*   Updated: 2025/03/11 13:11:03 by dagredan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,20 @@ void	processes_free(t_proc **processes)
 		ptr++;
 	}
 	free(processes);
+}
+
+int	processes_wait(t_pipex *data, int *status)
+{
+	int	ret;
+
+	ret = 0;
+	while (data->active_child_processes > 0)
+	{
+		if (wait(status) == -1)
+			ret = -1;
+		data->active_child_processes--;
+	}
+	return (ret);
 }
 
 void	processes_init(t_pipex *data, int argc, char *argv[])

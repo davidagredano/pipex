@@ -6,7 +6,7 @@
 /*   By: dagredan <dagredan@student.42barcelona.co  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/03 11:53:33 by dagredan          #+#    #+#             */
-/*   Updated: 2025/03/10 20:27:38 by dagredan         ###   ########.fr       */
+/*   Updated: 2025/03/11 13:18:58 by dagredan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -107,31 +107,42 @@ int	main(int argc, char *argv[], char *envp[])
 	if (argc != 5)
 		return (EXIT_FAILURE);
 	data = pipex_create(argc, argv, envp);
+
 	pid = fork();
 	if (pid == -1)
-		free_perror_exit(data, "fork", EXIT_FAILURE);
+	{
+		perror("fork");
+		pipex_cleanup(data);
+		exit(EXIT_FAILURE);
+	}
 	else if (pid == 0)
 	{
 		process_redirect_stdin(data, data->processes[0]);
 		process_redirect_stdout(data, data->processes[0]);
-		pipes_close(data);
+		if (pipes_close(data) == -1)
+			free_perror_exit(data, "pipes_close", EXIT_FAILURE);
 		process_execute(data, cmd_create(data, argv[2]));
 	}
+	data->active_child_processes++;
+
 	pid = fork();
 	if (pid == -1)
 	{
-		cleanup_partial(data->pipes[0]);
-		free_perror_exit(data, "fork", EXIT_FAILURE);
+		perror("fork");
+		pipex_cleanup(data);
+		exit(EXIT_FAILURE);
 	}
 	else if (pid == 0)
 	{
 		process_redirect_stdin(data, data->processes[1]);
 		process_redirect_stdout(data, data->processes[1]);
-		pipes_close(data);
+		if (pipes_close(data) == -1)
+			free_perror_exit(data, "pipes_close", EXIT_FAILURE);
 		process_execute(data, cmd_create(data, argv[3]));
 	}
-	last_exit_status = cleanup(data->pipes[0]);
-	pipex_free(data);
+	data->active_child_processes++;
+
+	last_exit_status = pipex_cleanup(data);
 	if (WIFEXITED(last_exit_status))
 		return (WEXITSTATUS(last_exit_status));
 }

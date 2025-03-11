@@ -6,7 +6,7 @@
 /*   By: dagredan <dagredan@student.42barcelona.co  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/10 12:29:31 by dagredan          #+#    #+#             */
-/*   Updated: 2025/03/10 19:17:10 by dagredan         ###   ########.fr       */
+/*   Updated: 2025/03/10 21:19:03 by dagredan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,11 +26,13 @@ void	pipes_free(int **pipes)
 	free(pipes);
 }
 
-void	pipes_close(t_pipex *data)
+int	pipes_close(t_pipex *data)
 {
 	int	**ptr;
 	int	*pipe;
+	int	ret;
 
+	ret = 0;
 	ptr = data->pipes;
 	while (*ptr)
 	{
@@ -38,15 +40,16 @@ void	pipes_close(t_pipex *data)
 		if (pipe[0] != -1)
 		{
 			if (close(pipe[0]) == -1)
-				free_perror_exit(data, "close", EXIT_FAILURE);
+				ret = -1;
 		}
 		if (pipe[1] != -1)
 		{
 			if (close(pipe[1]) == -1)
-				free_perror_exit(data, "close", EXIT_FAILURE);
+				ret = -1;
 		}
 		ptr++;
 	}
+	return (ret);
 }
 
 int	**pipes_create(int count)

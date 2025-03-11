@@ -6,7 +6,7 @@
 /*   By: dagredan <dagredan@student.42barcelona.co  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/03 11:37:19 by dagredan          #+#    #+#             */
-/*   Updated: 2025/03/10 20:25:55 by dagredan         ###   ########.fr       */
+/*   Updated: 2025/03/11 12:51:00 by dagredan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,20 +44,23 @@ typedef struct s_pipex
 	int		pipes_count;
 	int		**pipes;
 	char	**envp;
+	int		active_child_processes;
 }		t_pipex;
 
 /* Pipex */
 t_pipex	*pipex_create(int argc, char *argv[], char *envp[]);
+int		pipex_cleanup(t_pipex *data);
 void	pipex_free(t_pipex *data);
 
 /* Processes */
 t_proc	**processes_create(int count);
 void	processes_init(t_pipex *data, int argc, char *argv[]);
+int		processes_wait(t_pipex *data, int *status);
 void	processes_free(t_proc **processes);
 
 /* Pipes */
 int		**pipes_create(int n);
-void	pipes_close(t_pipex *data);
+int		pipes_close(t_pipex *data);
 void	pipes_free(int **pipes);
 
 /* Commands */
@@ -66,8 +69,6 @@ void	cmd_free(t_cmd *cmd);
 
 /* Utils */
 void	free_strs(char **strs);
-void	cleanup_partial(int pipefd[2]);
-int		cleanup(int pipefd[2]);
 void	free_exit(t_pipex *data, int status);
 void	free_perror_exit(t_pipex *data, char *message, int status);
 

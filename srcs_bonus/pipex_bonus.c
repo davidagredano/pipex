@@ -6,7 +6,7 @@
 /*   By: dagredan <dagredan@student.42barcelona.co  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/10 18:53:21 by dagredan          #+#    #+#             */
-/*   Updated: 2025/03/10 20:02:30 by dagredan         ###   ########.fr       */
+/*   Updated: 2025/03/11 12:40:49 by dagredan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,24 @@ void	pipex_free(t_pipex *data)
 	if (data->pipes)
 		pipes_free(data->pipes);
 	free(data);
+}
+
+int	pipex_cleanup(t_pipex *data)
+{
+	int	status;
+	int	close_ret;
+	int	wait_ret;
+
+	close_ret = pipes_close(data);
+	if (close_ret == -1)
+		perror("pipes_close");
+	wait_ret = processes_wait(data, &status);
+	if (wait_ret == -1)
+		perror("processes_wait");
+	pipex_free(data);
+	if (wait_ret == -1 || close_ret == -1)
+		exit(EXIT_FAILURE);
+	return (status);
 }
 
 t_pipex	*pipex_create(int argc, char *argv[], char *envp[])
