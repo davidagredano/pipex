@@ -6,7 +6,7 @@
 /*   By: dagredan <dagredan@student.42barcelona.co  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/03 11:53:33 by dagredan          #+#    #+#             */
-/*   Updated: 2025/03/11 14:22:42 by dagredan         ###   ########.fr       */
+/*   Updated: 2025/03/11 14:50:29 by dagredan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,14 +22,14 @@ static void	process_execute(t_pipex *data, t_cmd *cmd)
 	}
 }
 
-static t_cmd	*cmd_create(t_pipex *data, char *cmd_str)
+static t_cmd	*cmd_create(t_pipex *data, t_proc *process)
 {
 	t_cmd	*cmd;
 
 	cmd = (t_cmd *) ft_calloc(1, sizeof(t_cmd));
 	if (!cmd)
 		free_perror_exit(data, "cmd_create", EXIT_FAILURE);
-	cmd->argv = ft_split(cmd_str, ' ');
+	cmd->argv = ft_split(process->cmd_str, ' ');
 	if (!cmd->argv)
 	{
 		cmd_free(cmd);
@@ -119,7 +119,7 @@ int	main(int argc, char *argv[], char *envp[])
 			process_redirect_stdout(data, data->processes[i]);
 			if (pipes_close(data) == -1)
 				free_perror_exit(data, "pipes_close", EXIT_FAILURE);
-			process_execute(data, cmd_create(data, argv[i + 2]));
+			process_execute(data, cmd_create(data, data->processes[i]));
 		}
 		data->active_child_processes++;
 		i++;
