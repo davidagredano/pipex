@@ -6,7 +6,7 @@
 /*   By: dagredan <dagredan@student.42barcelona.co  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/10 18:53:21 by dagredan          #+#    #+#             */
-/*   Updated: 2025/03/11 14:33:58 by dagredan         ###   ########.fr       */
+/*   Updated: 2025/03/11 14:55:35 by dagredan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,7 @@ int	pipex_cleanup(t_pipex *data)
 	int	close_ret;
 	int	wait_ret;
 
-	close_ret = pipes_close(data);
+	close_ret = pipes_close(data->pipes);
 	if (close_ret == -1)
 		perror("pipes_close");
 	wait_ret = processes_wait(data, &status);

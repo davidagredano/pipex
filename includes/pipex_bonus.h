@@ -6,7 +6,7 @@
 /*   By: dagredan <dagredan@student.42barcelona.co  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/03 11:37:19 by dagredan          #+#    #+#             */
-/*   Updated: 2025/03/11 14:03:36 by dagredan         ###   ########.fr       */
+/*   Updated: 2025/03/11 14:55:08 by dagredan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,7 +61,7 @@ void	processes_free(t_proc **processes);
 
 /* Pipes */
 int		**pipes_create(int n);
-int		pipes_close(t_pipex *data);
+int		pipes_close(int **pipes);
 void	pipes_free(int **pipes);
 
 /* Commands */

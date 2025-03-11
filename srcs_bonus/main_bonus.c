@@ -6,7 +6,7 @@
 /*   By: dagredan <dagredan@student.42barcelona.co  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/03 11:53:33 by dagredan          #+#    #+#             */
-/*   Updated: 2025/03/11 14:50:29 by dagredan         ###   ########.fr       */
+/*   Updated: 2025/03/11 14:54:19 by dagredan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -117,7 +117,7 @@ int	main(int argc, char *argv[], char *envp[])
 		{
 			process_redirect_stdin(data, data->processes[i]);
 			process_redirect_stdout(data, data->processes[i]);
-			if (pipes_close(data) == -1)
+			if (pipes_close(data->pipes) == -1)
 				free_perror_exit(data, "pipes_close", EXIT_FAILURE);
 			process_execute(data, cmd_create(data, data->processes[i]));
 		}
