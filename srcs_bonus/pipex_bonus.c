@@ -6,7 +6,7 @@
 /*   By: dagredan <dagredan@student.42barcelona.co  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/10 18:53:21 by dagredan          #+#    #+#             */
-/*   Updated: 2025/03/11 12:40:49 by dagredan         ###   ########.fr       */
+/*   Updated: 2025/03/11 14:19:31 by dagredan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,13 @@ void	pipex_free(t_pipex *data)
 	if (data->pipes)
 		pipes_free(data->pipes);
 	free(data);
+}
+
+int	pipex_perror_cleanup_exit(char *message, t_pipex *data, int status)
+{
+	perror(message);
+	pipex_cleanup(data);
+	exit(status);
 }
 
 int	pipex_cleanup(t_pipex *data)

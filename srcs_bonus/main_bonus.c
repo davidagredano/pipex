@@ -6,7 +6,7 @@
 /*   By: dagredan <dagredan@student.42barcelona.co  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/03 11:53:33 by dagredan          #+#    #+#             */
-/*   Updated: 2025/03/11 13:29:56 by dagredan         ###   ########.fr       */
+/*   Updated: 2025/03/11 13:53:21 by dagredan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -113,11 +113,7 @@ int	main(int argc, char *argv[], char *envp[])
 	{
 		pid = fork();
 		if (pid == -1)
-		{
-			perror("fork");
-			pipex_cleanup(data);
-			exit(EXIT_FAILURE);
-		}
+			pipex_perror_cleanup_exit("fork", data, EXIT_FAILURE);
 		else if (pid == 0)
 		{
 			process_redirect_stdin(data, data->processes[i]);

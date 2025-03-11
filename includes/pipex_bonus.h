@@ -6,7 +6,7 @@
 /*   By: dagredan <dagredan@student.42barcelona.co  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/03 11:37:19 by dagredan          #+#    #+#             */
-/*   Updated: 2025/03/11 12:51:00 by dagredan         ###   ########.fr       */
+/*   Updated: 2025/03/11 14:03:36 by dagredan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,6 +50,7 @@ typedef struct s_pipex
 /* Pipex */
 t_pipex	*pipex_create(int argc, char *argv[], char *envp[]);
 int		pipex_cleanup(t_pipex *data);
+int		pipex_perror_cleanup_exit(char *message, t_pipex *data, int status);
 void	pipex_free(t_pipex *data);
 
 /* Processes */
