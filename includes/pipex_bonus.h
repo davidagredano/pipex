@@ -55,17 +55,16 @@ typedef struct s_pipex
 	char	**envp;
 }		t_pipex;
 
-/* Pipex */
-t_pipex	*pipex_create(int argc, char *argv[], char *envp[]);
-int		pipex_cleanup(t_pipex *data);
-int		pipex_perror_cleanup_exit(char *message, t_pipex *data, int status);
-void	pipex_free(t_pipex *data);
-
 /* Processes */
 t_proc	**processes_create(int count);
 void	processes_init(t_pipex *data, int argc, char *argv[]);
 int		processes_wait(t_pipex *data, int *status);
 void	processes_free(t_proc **processes);
+
+/* Process */
+void	process_redirect_stdin(t_pipex *data, t_proc *process);
+void	process_redirect_stdout(t_pipex *data, t_proc *process);
+void	process_execute(t_pipex *data, t_cmd *command);
 
 /* Pipes */
 int		**pipes_create(int n);
@@ -82,9 +81,11 @@ t_cmd	*command_create(t_pipex *data, t_proc *process);
 void	command_free(t_cmd *command);
 
 /* Utils */
-void	free_strs(char **strs);
-void	free_exit(t_pipex *data, int status);
-void	free_perror_exit(t_pipex *data, char *message, int status);
+int		pipex_perror_cleanup_exit(char *message, t_pipex *data, int status);
+int		pipex_cleanup(t_pipex *data);
+void	pipex_free(t_pipex *data);
+void	process_perror_free_exit(char *message, t_pipex *data, int status);
+void	strs_free(char **strs);
 char	*get_next_line(int fd);
 
 #endif

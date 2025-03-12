@@ -33,7 +33,7 @@ char	*command_get_filename(char *command_name, char **envp);
 void	command_free(t_cmd *command);
 
 /* Utils */
-void	free_strs(char **strs);
+void	strs_free(char **strs);
 void	cleanup_partial(int pipefd[2]);
 int		cleanup(int pipefd[2]);
 void	perror_exit(char *message, int status);

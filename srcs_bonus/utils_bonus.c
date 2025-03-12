@@ -12,20 +12,7 @@
 
 #include "../includes/pipex_bonus.h"
 
-void	free_perror_exit(t_pipex *data, char *message, int status)
-{
-	pipex_free(data);
-	perror(message);
-	exit(status);
-}
-
-void	free_exit(t_pipex *data, int status)
-{
-	pipex_free(data);
-	exit(status);
-}
-
-void	free_strs(char **strs)
+void	strs_free(char **strs)
 {
 	char	**ptr;
 
@@ -36,4 +23,18 @@ void	free_strs(char **strs)
 		ptr++;
 	}
 	free(strs);
+}
+
+void	process_perror_free_exit(char *message, t_pipex *data, int status)
+{
+	perror(message);
+	pipex_free(data);
+	exit(status);
+}
+
+int	pipex_perror_cleanup_exit(char *message, t_pipex *data, int status)
+{
+	perror(message);
+	pipex_cleanup(data);
+	exit(status);
 }

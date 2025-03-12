@@ -61,7 +61,7 @@ void	cleanup_partial(int pipe[2])
 	}
 }
 
-void	free_strs(char **strs)
+void	strs_free(char **strs)
 {
 	char	**ptr;
 

@@ -87,7 +87,7 @@ static char	*command_get_filename(char *command_name, char **envp)
 	}
 	if (*path_ptr == NULL)
 		candidate = ft_strdup("command not found");
-	free_strs(path_strs);
+	strs_free(path_strs);
 	return (candidate);
 }
 
@@ -97,18 +97,18 @@ t_cmd	*command_create(t_pipex *data, t_proc *process)
 
 	command = (t_cmd *) ft_calloc(1, sizeof(t_cmd));
 	if (!command)
-		free_perror_exit(data, "command_create", EXIT_FAILURE);
+		process_perror_free_exit("command_create", data, EXIT_FAILURE);
 	command->argv = ft_split(process->command_str, ' ');
 	if (!command->argv)
 	{
 		command_free(command);
-		free_perror_exit(data, "command_create", EXIT_FAILURE);
+		process_perror_free_exit("command_create", data, EXIT_FAILURE);
 	}
 	command->filename = command_get_filename(command->argv[0], data->envp);
 	if (!command->filename)
 	{
 		command_free(command);
-		free_perror_exit(data, "command_create", EXIT_FAILURE);
+		process_perror_free_exit("command_create", data, EXIT_FAILURE);
 	}
 	if (ft_strcmp(command->filename, "command not found") == 0)
 	{

@@ -13,65 +13,69 @@
 #include "../includes/pipex_bonus.h"
 #include "../libft/libft.h"
 
-static void	process_execute(t_pipex *data, t_cmd *command)
+void	pipex_free(t_pipex *data)
 {
-	if (execve(command->filename, command->argv, data->envp) == -1)
-	{
-		command_free(command);
-		free_perror_exit(data, "execve", EXIT_FAILURE);
-	}
+	if (!data)
+		return ;
+	if (data->processes)
+		processes_free(data->processes);
+	if (data->pipes)
+		pipes_free(data->pipes);
+	if (data->heredoc)
+		heredoc_free(data->heredoc);
+	free(data);
 }
 
-static void	process_redirect_stdout(t_pipex *data, t_proc *process)
+int	pipex_cleanup(t_pipex *data)
 {
-	int	fd;
+	int	status;
+	int	close_ret;
+	int	wait_ret;
 
-	if (process->outfile)
-	{
-		if (data->heredoc_enabled)
-			fd = open(process->outfile, O_WRONLY | O_APPEND | O_CREAT, 0644);
-		else
-			fd = open(process->outfile, O_WRONLY | O_TRUNC | O_CREAT, 0644);
-		if (fd == -1)
-			free_perror_exit(data, process->outfile, EXIT_FAILURE);
-		if (dup2(fd, STDOUT_FILENO) == -1)
-			free_perror_exit(data, "dup2", EXIT_FAILURE);
-		if (close(fd) == -1)
-			free_perror_exit(data, "close", EXIT_FAILURE);
-	}
-	else
-	{
-		if (dup2(process->pipe_write_fd, STDOUT_FILENO) == -1)
-			free_perror_exit(data, "dup2", EXIT_FAILURE);
-	}
+	close_ret = pipes_close(data->pipes);
+	if (close_ret == -1)
+		perror("pipes_close");
+	wait_ret = processes_wait(data, &status);
+	if (wait_ret == -1)
+		perror("processes_wait");
+	pipex_free(data);
+	if (wait_ret == -1 || close_ret == -1)
+		exit(EXIT_FAILURE);
+	if (WIFEXITED(status))
+		return (WEXITSTATUS(status));
+	return (EXIT_FAILURE);
 }
 
-static void	process_redirect_stdin(t_pipex *data, t_proc *process)
+static t_pipex	*pipex_create(int argc, char *argv[], char *envp[])
 {
-	int	fd;
+	t_pipex	*data;
 
-	if (process->infile)
+	data = (t_pipex *) ft_calloc(1, sizeof(t_pipex));
+	if (!data)
+		process_perror_free_exit("pipex_create", data, EXIT_FAILURE);
+	if (ft_strcmp(argv[1], "here_doc") == 0)
 	{
-		fd = open(process->infile, O_RDONLY);
-		if (fd != -1 && data->heredoc_enabled && unlink(process->infile) == -1)
-			free_perror_exit(data, "unlink", EXIT_FAILURE);
-		if (fd == -1)
-		{
-			perror(process->infile);
-			fd = open("/dev/null", O_RDONLY);
-			if (fd == -1)
-				free_perror_exit(data, "/dev/null", EXIT_FAILURE);
-		}
-		if (dup2(fd, STDIN_FILENO) == -1)
-			free_perror_exit(data, "dup2", EXIT_FAILURE);
-		if (close(fd) == -1)
-			free_perror_exit(data, "close", EXIT_FAILURE);
+		data->heredoc_enabled = 1;
+		data->heredoc = heredoc_create();
+		if (!data->heredoc)
+			process_perror_free_exit("heredoc_create", data, EXIT_FAILURE);
 	}
-	else
+	data->processes_count = argc - 3 - data->heredoc_enabled;
+	data->processes = processes_create(data->processes_count);
+	if (!data->processes)
+		process_perror_free_exit("processes_create", data, EXIT_FAILURE);
+	data->pipes_count = data->processes_count - 1;
+	data->pipes = pipes_create(data->pipes_count);
+	if (!data->pipes)
+		process_perror_free_exit("pipes_create", data, EXIT_FAILURE);
+	data->envp = envp;
+	if (data->heredoc_enabled)
 	{
-		if (dup2(process->pipe_read_fd, STDIN_FILENO) == -1)
-			free_perror_exit(data, "dup2", EXIT_FAILURE);
+		if (heredoc_init(data->heredoc, argv) == -1)
+			process_perror_free_exit("heredoc_init", data, EXIT_FAILURE);
 	}
+	processes_init(data, argc, argv);
+	return (data);
 }
 
 int	main(int argc, char *argv[], char *envp[])
@@ -94,7 +98,7 @@ int	main(int argc, char *argv[], char *envp[])
 			process_redirect_stdin(data, data->processes[i]);
 			process_redirect_stdout(data, data->processes[i]);
 			if (pipes_close(data->pipes) == -1)
-				free_perror_exit(data, "pipes_close", EXIT_FAILURE);
+				process_perror_free_exit("pipes_close", data, EXIT_FAILURE);
 			process_execute(data, command_create(data, data->processes[i]));
 		}
 		data->processes_active++;

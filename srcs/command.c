@@ -87,6 +87,6 @@ char	*command_get_filename(char *command_name, char **envp)
 	}
 	if (*path_ptr == NULL)
 		candidate = ft_strdup("command not found");
-	free_strs(path_strs);
+	strs_free(path_strs);
 	return (candidate);
 }
