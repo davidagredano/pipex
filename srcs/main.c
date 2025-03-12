@@ -104,6 +104,20 @@ static void	process_redirect_stdin(int pipe[2], char *infile)
 		perror_exit("close", EXIT_FAILURE);
 }
 
+void	process_child1(int pipe[2], char *infile, char *cmd_str, char *envp[])
+{
+	process_redirect_stdin(pipe, infile);
+	process_redirect_stdout(pipe, NULL);
+	process_execute(command_create(cmd_str, envp));
+}
+
+void	process_child2(int pipe[2], char *outfile, char *cmd_str, char *envp[])
+{
+	process_redirect_stdin(pipe, NULL);
+	process_redirect_stdout(pipe, outfile);
+	process_execute(command_create(cmd_str, envp));
+}
+
 int	main(int argc, char *argv[], char *envp[])
 {
 	int		pipefd[2];
@@ -118,11 +132,7 @@ int	main(int argc, char *argv[], char *envp[])
 	if (pid == -1)
 		perror_exit("fork", EXIT_FAILURE);
 	else if (pid == 0)
-	{
-		process_redirect_stdin(pipefd, argv[1]);
-		process_redirect_stdout(pipefd, NULL);
-		process_execute(command_create(argv[2], envp));
-	}
+		process_child1(pipefd, argv[1], argv[2], envp);
 	pid = fork();
 	if (pid == -1)
 	{
@@ -130,12 +140,9 @@ int	main(int argc, char *argv[], char *envp[])
 		perror_exit("fork", EXIT_FAILURE);
 	}
 	else if (pid == 0)
-	{
-		process_redirect_stdin(pipefd, NULL);
-		process_redirect_stdout(pipefd, argv[4]);
-		process_execute(command_create(argv[3], envp));
-	}
+		process_child2(pipefd, argv[4], argv[3], envp);
 	last_exit_status = cleanup(pipefd);
 	if (WIFEXITED(last_exit_status))
 		return (WEXITSTATUS(last_exit_status));
+	return (EXIT_FAILURE);
 }
