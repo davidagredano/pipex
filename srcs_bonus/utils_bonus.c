@@ -25,16 +25,29 @@ void	strs_free(char **strs)
 	free(strs);
 }
 
-void	process_perror_free_exit(char *message, t_pipex *data, int status)
+int	cleanup(t_pipex *data)
 {
-	perror(message);
+	int	status;
+	int	close_ret;
+	int	wait_ret;
+
+	close_ret = pipes_close(data->pipes);
+	if (close_ret == -1)
+		perror("pipes_close");
+	wait_ret = processes_wait(data, &status);
+	if (wait_ret == -1)
+		perror("processes_wait");
 	pipex_free(data);
-	exit(status);
+	if (close_ret == -1 || wait_ret == -1)
+		exit(EXIT_FAILURE);
+	if (WIFEXITED(status))
+		return (WEXITSTATUS(status));
+	return (EXIT_FAILURE);
 }
 
-int	pipex_perror_cleanup_exit(char *message, t_pipex *data, int status)
+void	cleanup_exit(t_pipex *data, char *message, int status)
 {
 	perror(message);
-	pipex_cleanup(data);
+	cleanup(data);
 	exit(status);
 }

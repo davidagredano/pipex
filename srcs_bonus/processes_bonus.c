@@ -31,6 +31,8 @@ int	processes_wait(t_pipex *data, int *status)
 	int	ret;
 
 	ret = 0;
+	if (data->processes_active == 0)
+		return (ret);
 	while (data->processes_active > 0)
 	{
 		if (wait(status) == -1)
@@ -42,8 +44,8 @@ int	processes_wait(t_pipex *data, int *status)
 
 void	processes_init(t_pipex *data, int argc, char *argv[])
 {
-	int		i;
 	t_proc	*process;
+	int		i;
 
 	i = 0;
 	while (i < data->processes_count)
@@ -67,26 +69,22 @@ void	processes_init(t_pipex *data, int argc, char *argv[])
 	}
 }
 
-t_proc	**processes_create(int count)
+void	processes_create(t_pipex *data, int count)
 {
-	t_proc	**processes;
-	int		i;
+	int	i;
 
-	processes = (t_proc **) ft_calloc(count + 1, sizeof(t_proc *));
-	if (!processes)
-		return (NULL);
+	data->processes_count = count;
+	data->processes = (t_proc **)ft_calloc(count + 1, sizeof(t_proc *));
+	if (!data->processes)
+		cleanup_exit(data, "processes_create", EXIT_FAILURE);
 	i = 0;
 	while (i < count)
 	{
-		processes[i] = (t_proc *) ft_calloc(1, sizeof(t_proc));
-		if (!processes[i])
-		{
-			processes_free(processes);
-			return (NULL);
-		}
-		processes[i]->pipe_read_fd = -1;
-		processes[i]->pipe_write_fd = -1;
+		data->processes[i] = (t_proc *)ft_calloc(1, sizeof(t_proc));
+		if (!data->processes[i])
+			cleanup_exit(data, "processes_create", EXIT_FAILURE);
+		data->processes[i]->pipe_read_fd = -1;
+		data->processes[i]->pipe_write_fd = -1;
 		i++;
 	}
-	return (processes);
 }

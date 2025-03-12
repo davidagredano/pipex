@@ -29,52 +29,49 @@ void	pipes_free(int **pipes)
 int	pipes_close(int **pipes)
 {
 	int	**ptr;
-	int	*pipe;
 	int	ret;
 
 	ret = 0;
+	if (!pipes)
+		return (ret);
 	ptr = pipes;
 	while (*ptr)
 	{
-		pipe = *ptr;
-		if (pipe[0] != -1)
+		if ((*ptr)[0] != -1)
 		{
-			if (close(pipe[0]) == -1)
+			if (close((*ptr)[0]) == -1)
 				ret = -1;
 		}
-		if (pipe[1] != -1)
+		if ((*ptr)[1] != -1)
 		{
-			if (close(pipe[1]) == -1)
+			if (close((*ptr)[1]) == -1)
 				ret = -1;
 		}
 		ptr++;
 	}
+	if (ret == -1)
+		pipes_free(pipes);
 	return (ret);
 }
 
-int	**pipes_create(int count)
+void	pipes_create(t_pipex *data, int count)
 {
-	int	**pipes;
 	int	i;
 
-	pipes = (int **) ft_calloc(count + 1, sizeof(int *));
-	if (!pipes)
-		return (NULL);
+	data->pipes = (int **) ft_calloc(count + 1, sizeof(int *));
+	if (!data->pipes)
+		cleanup_exit(data, "pipes_create", EXIT_FAILURE);
 	i = 0;
 	while (i < count)
 	{
-		pipes[i] = (int *) ft_calloc(2, sizeof(int));
-		if (!pipes[i])
+		data->pipes[i] = (int *) ft_calloc(2, sizeof(int));
+		if (!data->pipes[i])
+			cleanup_exit(data, "pipes_create", EXIT_FAILURE);
+		if (pipe(data->pipes[i]) == -1)
 		{
-			pipes_free(pipes);
-			return (NULL);
-		}
-		if (pipe(pipes[i]) == -1)
-		{
-			pipes_free(pipes);
-			return (NULL);
+			free(data->pipes[i]);
+			cleanup_exit(data, "pipes_create", EXIT_FAILURE);
 		}
 		i++;
 	}
-	return (pipes);
 }

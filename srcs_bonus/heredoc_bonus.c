@@ -20,22 +20,22 @@ void	heredoc_free(t_hdoc *heredoc)
 	free(heredoc);
 }
 
-static int	heredoc_read_stdin(t_hdoc *heredoc)
+void	heredoc_read_stdin(t_pipex *data)
 {
 	int		fd;
 	char	*line;
 
-	fd = open(heredoc->filename, O_CREAT | O_WRONLY, 0600);
+	fd = open(data->heredoc->filename, O_CREAT | O_WRONLY, 0600);
 	if (fd == -1)
-		return (-1);
+		cleanup_exit(data, "heredoc_read_stdin", EXIT_FAILURE);
 	ft_putstr_fd("> ", STDOUT_FILENO);
 	while (1)
 	{
 		line = get_next_line(STDIN_FILENO);
 		if (!line)
-			return (-1);
+			cleanup_exit(data, "heredoc_read_stdin", EXIT_FAILURE);
 		ft_strtok(line, "\n");
-		if (ft_strcmp(line, heredoc->limiter) == 0)
+		if (ft_strcmp(line, data->heredoc->limiter) == 0)
 		{
 			free(line);
 			break ;
@@ -45,41 +45,37 @@ static int	heredoc_read_stdin(t_hdoc *heredoc)
 		ft_putstr_fd("> ", STDOUT_FILENO);
 	}
 	if (close(fd) == -1)
-		return (-1);
-	return (0);
+		cleanup_exit(data, "heredoc_read_stdin", EXIT_FAILURE);
 }
 
-int	heredoc_init(t_hdoc *heredoc, char *argv[])
+void	heredoc_init(t_pipex *data, char *argv[])
 {
 	char	*filename;
 	int		i;
 
-	heredoc->limiter = argv[2];
+	data->heredoc->limiter = argv[2];
 	i = 0;
 	while (1)
 	{
 		filename = ft_itoa(i);
 		if (filename == NULL)
-			return (-1);
+			cleanup_exit(data, "heredoc_init", EXIT_FAILURE);
 		if (access(filename, F_OK) == -1)
 		{
-			heredoc->filename = filename;
+			data->heredoc->filename = filename;
 			break ;
 		}
 		free(filename);
 		i++;
 	}
-	if (heredoc_read_stdin(heredoc) == -1)
-		return (-1);
-	return (0);
 }
 
-t_hdoc	*heredoc_create(void)
+void	heredoc_create(t_pipex *data, int is_here_doc)
 {
-	t_hdoc	*heredoc;
-
-	heredoc = (t_hdoc *) ft_calloc(1, sizeof(t_hdoc));
-	if (!heredoc)
-		return (NULL);
-	return (heredoc);
+	if (!is_here_doc)
+		return ;
+	data->heredoc_enabled = is_here_doc;
+	data->heredoc = (t_hdoc *)ft_calloc(1, sizeof(t_hdoc));
+	if (!data->heredoc)
+		cleanup_exit(data, "heredoc_create", EXIT_FAILURE);
 }

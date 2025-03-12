@@ -26,53 +26,21 @@ void	pipex_free(t_pipex *data)
 	free(data);
 }
 
-int	pipex_cleanup(t_pipex *data)
-{
-	int	status;
-	int	close_ret;
-	int	wait_ret;
-
-	close_ret = pipes_close(data->pipes);
-	if (close_ret == -1)
-		perror("pipes_close");
-	wait_ret = processes_wait(data, &status);
-	if (wait_ret == -1)
-		perror("processes_wait");
-	pipex_free(data);
-	if (wait_ret == -1 || close_ret == -1)
-		exit(EXIT_FAILURE);
-	if (WIFEXITED(status))
-		return (WEXITSTATUS(status));
-	return (EXIT_FAILURE);
-}
-
 static t_pipex	*pipex_create(int argc, char *argv[], char *envp[])
 {
 	t_pipex	*data;
 
 	data = (t_pipex *) ft_calloc(1, sizeof(t_pipex));
 	if (!data)
-		process_perror_free_exit("pipex_create", data, EXIT_FAILURE);
-	if (ft_strcmp(argv[1], "here_doc") == 0)
-	{
-		data->heredoc_enabled = 1;
-		data->heredoc = heredoc_create();
-		if (!data->heredoc)
-			process_perror_free_exit("heredoc_create", data, EXIT_FAILURE);
-	}
-	data->processes_count = argc - 3 - data->heredoc_enabled;
-	data->processes = processes_create(data->processes_count);
-	if (!data->processes)
-		process_perror_free_exit("processes_create", data, EXIT_FAILURE);
-	data->pipes_count = data->processes_count - 1;
-	data->pipes = pipes_create(data->pipes_count);
-	if (!data->pipes)
-		process_perror_free_exit("pipes_create", data, EXIT_FAILURE);
+		cleanup_exit(data, "pipex_create", EXIT_FAILURE);
+	heredoc_create(data, ft_strcmp(argv[1], "here_doc") == 0);
+	processes_create(data, argc - 3 - data->heredoc_enabled);
+	pipes_create(data, data->processes_count - 1);
 	data->envp = envp;
 	if (data->heredoc_enabled)
 	{
-		if (heredoc_init(data->heredoc, argv) == -1)
-			process_perror_free_exit("heredoc_init", data, EXIT_FAILURE);
+		heredoc_init(data, argv);
+		heredoc_read_stdin(data);
 	}
 	processes_init(data, argc, argv);
 	return (data);
@@ -108,17 +76,17 @@ int	main(int argc, char *argv[], char *envp[])
 	{
 		pid = fork();
 		if (pid == -1)
-			pipex_perror_cleanup_exit("fork", data, EXIT_FAILURE);
+			cleanup_exit(data, "fork", EXIT_FAILURE);
 		else if (pid == 0)
 		{
 			process_redirect_stdin(data, data->processes[i]);
 			process_redirect_stdout(data, data->processes[i]);
 			if (pipes_close(data->pipes) == -1)
-				process_perror_free_exit("pipes_close", data, EXIT_FAILURE);
+				cleanup_exit(data, "pipes_close", EXIT_FAILURE);
 			process_execute(data, command_create(data, data->processes[i]));
 		}
 		data->processes_active++;
 		i++;
 	}
-	return (pipex_cleanup(data));
+	return (cleanup(data));
 }

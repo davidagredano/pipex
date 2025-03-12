@@ -97,18 +97,18 @@ t_cmd	*command_create(t_pipex *data, t_proc *process)
 
 	command = (t_cmd *) ft_calloc(1, sizeof(t_cmd));
 	if (!command)
-		process_perror_free_exit("command_create", data, EXIT_FAILURE);
+		cleanup_exit(data, "command_create", EXIT_FAILURE);
 	command->argv = ft_split(process->command_str, ' ');
 	if (!command->argv)
 	{
 		command_free(command);
-		process_perror_free_exit("command_create", data, EXIT_FAILURE);
+		cleanup_exit(data, "command_create", EXIT_FAILURE);
 	}
 	command->filename = command_get_filename(command->argv[0], data->envp);
 	if (!command->filename)
 	{
 		command_free(command);
-		process_perror_free_exit("command_create", data, EXIT_FAILURE);
+		cleanup_exit(data, "command_create", EXIT_FAILURE);
 	}
 	if (ft_strcmp(command->filename, "command not found") == 0)
 	{
