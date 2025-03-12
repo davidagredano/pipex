@@ -78,14 +78,30 @@ static t_pipex	*pipex_create(int argc, char *argv[], char *envp[])
 	return (data);
 }
 
+static void	pipex_ensure_proper_usage(int argc, char *argv[])
+{
+	int	is_here_doc;
+
+	is_here_doc = (argv[1] && ft_strcmp(argv[1], "here_doc") == 0);
+	if (!is_here_doc && argc < 5)
+	{
+		ft_putstr_fd("Error: Not enough arguments\n", 2);
+		exit(EXIT_FAILURE);
+	}
+	if (is_here_doc && argc < 6)
+	{
+		ft_putstr_fd("Error: Not enough arguments for here_doc\n", 2);
+		exit(EXIT_FAILURE);
+	}
+}
+
 int	main(int argc, char *argv[], char *envp[])
 {
 	t_pipex	*data;
 	pid_t	pid;
 	int		i;
 
-	if (argc < 5)
-		return (EXIT_FAILURE);
+	pipex_ensure_proper_usage(argc, argv);
 	data = pipex_create(argc, argv, envp);
 	i = 0;
 	while (i < data->processes_count)
