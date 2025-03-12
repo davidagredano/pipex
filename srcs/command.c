@@ -1,37 +1,37 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   commands_bonus.c                                   :+:      :+:    :+:   */
+/*   commands.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: dagredan <dagredan@student.42barcelona.co  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/04 12:40:31 by dagredan          #+#    #+#             */
-/*   Updated: 2025/03/10 18:27:52 by dagredan         ###   ########.fr       */
+/*   Updated: 2025/03/08 11:09:15 by dagredan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../includes/pipex_bonus.h"
+#include "../includes/pipex.h"
 #include "../libft/libft.h"
 
-void	cmd_free(t_cmd *cmd)
+void	command_free(t_cmd *command)
 {
 	char	**ptr;
 
-	if (!cmd)
+	if (!command)
 		return ;
-	if (cmd->filename)
-		free(cmd->filename);
-	if (cmd->argv)
+	if (command->filename)
+		free(command->filename);
+	if (command->argv)
 	{
-		ptr = cmd->argv;
+		ptr = command->argv;
 		while (*ptr)
 		{
 			free(*ptr);
 			ptr++;
 		}
-		free(cmd->argv);
+		free(command->argv);
 	}
-	free(cmd);
+	free(command);
 }
 
 static char	*path_join(char *path, char *filename)
@@ -63,21 +63,21 @@ static char	**get_path_strs(char **envp)
 	return (NULL);
 }
 
-char	*cmd_get_filename(char *cmd_name, char **envp)
+char	*command_get_filename(char *command_name, char **envp)
 {
 	char	**path_strs;
 	char	**path_ptr;
 	char	*candidate;
 
-	if (access(cmd_name, X_OK) == 0)
-		return (ft_strdup(cmd_name));
+	if (access(command_name, X_OK) == 0)
+		return (ft_strdup(command_name));
 	path_strs = get_path_strs(envp);
 	if (!path_strs)
 		return (NULL);
 	path_ptr = path_strs;
 	while (*path_ptr)
 	{
-		candidate = path_join(*path_ptr, cmd_name);
+		candidate = path_join(*path_ptr, command_name);
 		if (!candidate)
 			break ;
 		else if (access(candidate, X_OK) == 0)

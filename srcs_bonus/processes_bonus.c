@@ -62,7 +62,7 @@ void	processes_init(t_pipex *data, int argc, char *argv[])
 		}
 		if (i == data->processes_count - 1)
 			process->outfile = argv[argc - 1];
-		process->cmd_str = argv[i + 2 + data->heredoc_enabled];
+		process->command_str = argv[i + 2 + data->heredoc_enabled];
 		i++;
 	}
 }

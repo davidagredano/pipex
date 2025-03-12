@@ -13,44 +13,44 @@
 #include "../includes/pipex.h"
 #include "../libft/libft.h"
 
-static void	process_execute(t_cmd *cmd)
+static void	process_execute(t_cmd *command)
 {
-	if (!cmd)
-		perror_exit("cmd_create", EXIT_FAILURE);
-	if (execve(cmd->filename, cmd->argv, cmd->envp) == -1)
+	if (!command)
+		perror_exit("command_create", EXIT_FAILURE);
+	if (execve(command->filename, command->argv, command->envp) == -1)
 	{
-		cmd_free(cmd);
+		command_free(command);
 		perror_exit("execve", EXIT_FAILURE);
 	}
 }
 
-static t_cmd	*cmd_create(char *cmd_str, char **envp)
+static t_cmd	*command_create(char *command_str, char **envp)
 {
-	t_cmd	*cmd;
+	t_cmd	*command;
 
-	cmd = (t_cmd *) ft_calloc(1, sizeof(t_cmd));
-	if (!cmd)
+	command = (t_cmd *) ft_calloc(1, sizeof(t_cmd));
+	if (!command)
 		return (NULL);
-	cmd->envp = envp;
-	cmd->argv = ft_split(cmd_str, ' ');
-	if (!cmd->argv)
+	command->envp = envp;
+	command->argv = ft_split(command_str, ' ');
+	if (!command->argv)
 	{
-		cmd_free(cmd);
-		return (NULL);
-	}
-	cmd->filename = cmd_get_filename(cmd->argv[0], envp);
-	if (!cmd->filename)
-	{
-		cmd_free(cmd);
+		command_free(command);
 		return (NULL);
 	}
-	if (ft_strcmp(cmd->filename, "command not found") == 0)
+	command->filename = command_get_filename(command->argv[0], envp);
+	if (!command->filename)
 	{
-		dprintf(STDERR_FILENO, "%s: command not found\n", cmd->argv[0]);
-		cmd_free(cmd);
+		command_free(command);
+		return (NULL);
+	}
+	if (ft_strcmp(command->filename, "command not found") == 0)
+	{
+		dprintf(STDERR_FILENO, "%s: command not found\n", command->argv[0]);
+		command_free(command);
 		exit(EXIT_COMMAND_NOT_FOUND);
 	}
-	return (cmd);
+	return (command);
 }
 
 static void	process_redirect_stdout(int pipe[2], char *outfile)
@@ -121,7 +121,7 @@ int	main(int argc, char *argv[], char *envp[])
 	{
 		process_redirect_stdin(pipefd, argv[1]);
 		process_redirect_stdout(pipefd, NULL);
-		process_execute(cmd_create(argv[2], envp));
+		process_execute(command_create(argv[2], envp));
 	}
 	pid = fork();
 	if (pid == -1)
@@ -133,7 +133,7 @@ int	main(int argc, char *argv[], char *envp[])
 	{
 		process_redirect_stdin(pipefd, NULL);
 		process_redirect_stdout(pipefd, argv[4]);
-		process_execute(cmd_create(argv[3], envp));
+		process_execute(command_create(argv[3], envp));
 	}
 	last_exit_status = cleanup(pipefd);
 	if (WIFEXITED(last_exit_status))

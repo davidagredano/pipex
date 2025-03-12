@@ -29,16 +29,13 @@ typedef struct s_cmd
 }		t_cmd;
 
 /* Commands */
-char	*cmd_get_filename(char *cmd_name, char **envp);
-void	cmd_free(t_cmd *cmd);
+char	*command_get_filename(char *command_name, char **envp);
+void	command_free(t_cmd *command);
 
 /* Utils */
 void	free_strs(char **strs);
 void	cleanup_partial(int pipefd[2]);
 int		cleanup(int pipefd[2]);
 void	perror_exit(char *message, int status);
-
-/* Debug */
-void	print_cmd(t_cmd *cmd);
 
 #endif

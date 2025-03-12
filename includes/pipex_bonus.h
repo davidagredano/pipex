@@ -40,7 +40,7 @@ typedef struct s_proc
 	int		pipe_write_fd;
 	char	*infile;
 	char	*outfile;
-	char	*cmd_str;
+	char	*command_str;
 }		t_proc;
 
 typedef struct s_pipex
@@ -77,17 +77,14 @@ t_hdoc	*heredoc_create(void);
 int		heredoc_init(t_hdoc *heredoc, char *argv[]);
 void	heredoc_free(t_hdoc *heredoc);
 
-/* Commands */
-char	*cmd_get_filename(char *cmd_name, char **envp);
-void	cmd_free(t_cmd *cmd);
+/* Command */
+t_cmd	*command_create(t_pipex *data, t_proc *process);
+void	command_free(t_cmd *command);
 
 /* Utils */
 void	free_strs(char **strs);
 void	free_exit(t_pipex *data, int status);
 void	free_perror_exit(t_pipex *data, char *message, int status);
-
-/* Debug */
-void	print_cmd(t_cmd *cmd);
 char	*get_next_line(int fd);
 
 #endif

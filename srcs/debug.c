@@ -1,14 +1,14 @@
 #include "../includes/pipex.h"
 #include "../libft/libft.h"
 
-void	print_cmd(t_cmd *cmd)
+void	print_command(t_cmd *command)
 {
 	char	**argv_ptr;
 
-	ft_putstr("cmd->filename: ");
-	ft_putendl_fd(cmd->filename, STDOUT_FILENO);
-	ft_putstr("cmd->argv: ");
-	argv_ptr = cmd->argv;
+	ft_putstr("command->filename: ");
+	ft_putendl_fd(command->filename, STDOUT_FILENO);
+	ft_putstr("command->argv: ");
+	argv_ptr = command->argv;
 	while (*argv_ptr)
 	{
 		ft_putstr(*argv_ptr);

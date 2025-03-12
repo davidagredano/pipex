@@ -13,42 +13,13 @@
 #include "../includes/pipex_bonus.h"
 #include "../libft/libft.h"
 
-static void	process_execute(t_pipex *data, t_cmd *cmd)
+static void	process_execute(t_pipex *data, t_cmd *command)
 {
-	if (execve(cmd->filename, cmd->argv, data->envp) == -1)
+	if (execve(command->filename, command->argv, data->envp) == -1)
 	{
-		cmd_free(cmd);
+		command_free(command);
 		free_perror_exit(data, "execve", EXIT_FAILURE);
 	}
-}
-
-static t_cmd	*cmd_create(t_pipex *data, t_proc *process)
-{
-	t_cmd	*cmd;
-
-	cmd = (t_cmd *) ft_calloc(1, sizeof(t_cmd));
-	if (!cmd)
-		free_perror_exit(data, "cmd_create", EXIT_FAILURE);
-	cmd->argv = ft_split(process->cmd_str, ' ');
-	if (!cmd->argv)
-	{
-		cmd_free(cmd);
-		free_perror_exit(data, "cmd_create", EXIT_FAILURE);
-	}
-	cmd->filename = cmd_get_filename(cmd->argv[0], data->envp);
-	if (!cmd->filename)
-	{
-		cmd_free(cmd);
-		free_perror_exit(data, "cmd_create", EXIT_FAILURE);
-	}
-	if (ft_strcmp(cmd->filename, "command not found") == 0)
-	{
-		dprintf(STDERR_FILENO, "%s: command not found\n", cmd->argv[0]);
-		cmd_free(cmd);
-		pipex_free(data);
-		exit(EXIT_COMMAND_NOT_FOUND);
-	}
-	return (cmd);
 }
 
 static void	process_redirect_stdout(t_pipex *data, t_proc *process)
@@ -124,7 +95,7 @@ int	main(int argc, char *argv[], char *envp[])
 			process_redirect_stdout(data, data->processes[i]);
 			if (pipes_close(data->pipes) == -1)
 				free_perror_exit(data, "pipes_close", EXIT_FAILURE);
-			process_execute(data, cmd_create(data, data->processes[i]));
+			process_execute(data, command_create(data, data->processes[i]));
 		}
 		data->processes_active++;
 		i++;
