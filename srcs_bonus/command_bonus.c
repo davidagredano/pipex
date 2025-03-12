@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   commands_bonus.c                                   :+:      :+:    :+:   */
+/*   command_bonus.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: dagredan <dagredan@student.42barcelona.co  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/04 12:40:31 by dagredan          #+#    #+#             */
-/*   Updated: 2025/03/10 18:27:52 by dagredan         ###   ########.fr       */
+/*   Updated: 2025/03/13 00:01:12 by dagredan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -112,7 +112,7 @@ t_cmd	*command_create(t_pipex *data, t_proc *process)
 	}
 	if (ft_strcmp(command->filename, "command not found") == 0)
 	{
-		dprintf(STDERR_FILENO, "%s: command not found\n", command->argv[0]);
+		print_error(command->filename, ": command not found\n");
 		command_free(command);
 		pipex_free(data);
 		exit(EXIT_COMMAND_NOT_FOUND);

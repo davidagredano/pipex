@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   commands.c                                         :+:      :+:    :+:   */
+/*   command.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: dagredan <dagredan@student.42barcelona.co  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/04 12:40:31 by dagredan          #+#    #+#             */
-/*   Updated: 2025/03/08 11:09:15 by dagredan         ###   ########.fr       */
+/*   Updated: 2025/03/12 23:59:51 by dagredan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -113,7 +113,7 @@ t_cmd	*command_create(char *command_str, char **envp)
 	}
 	if (ft_strcmp(command->filename, "command not found") == 0)
 	{
-		dprintf(STDERR_FILENO, "%s: command not found\n", command->argv[0]);
+		print_error(command->filename, ": command not found\n");
 		command_free(command);
 		exit(EXIT_COMMAND_NOT_FOUND);
 	}

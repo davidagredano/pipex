@@ -44,5 +44,6 @@ void	strs_free(char **strs);
 void	cleanup_partial(int pipefd[2]);
 int		cleanup(int pipefd[2]);
 void	perror_exit(char *message, int status);
+void	print_error(char *str1, char *str2);
 
 #endif
