@@ -6,7 +6,7 @@
 /*   By: dagredan <dagredan@student.42barcelona.co  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/10 18:53:21 by dagredan          #+#    #+#             */
-/*   Updated: 2025/03/11 14:55:35 by dagredan         ###   ########.fr       */
+/*   Updated: 2025/03/11 16:25:35 by dagredan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,8 @@ void	pipex_free(t_pipex *data)
 		processes_free(data->processes);
 	if (data->pipes)
 		pipes_free(data->pipes);
+	if (data->heredoc)
+		heredoc_free(data->heredoc);
 	free(data);
 }
 
@@ -58,7 +60,14 @@ t_pipex	*pipex_create(int argc, char *argv[], char *envp[])
 	data = (t_pipex *) ft_calloc(1, sizeof(t_pipex));
 	if (!data)
 		free_perror_exit(data, "pipex_create", EXIT_FAILURE);
-	data->processes_count = argc - 3;
+	if (ft_strcmp(argv[1], "here_doc") == 0)
+	{
+		data->heredoc_enabled = 1;
+		data->heredoc = heredoc_create();
+		if (!data->heredoc)
+			free_perror_exit(data, "heredoc_create", EXIT_FAILURE);
+	}
+	data->processes_count = argc - 3 - data->heredoc_enabled;
 	data->processes = processes_create(data->processes_count);
 	if (!data->processes)
 		free_perror_exit(data, "processes_create", EXIT_FAILURE);
@@ -67,6 +76,11 @@ t_pipex	*pipex_create(int argc, char *argv[], char *envp[])
 	if (!data->pipes)
 		free_perror_exit(data, "pipes_create", EXIT_FAILURE);
 	data->envp = envp;
+	if (data->heredoc_enabled)
+	{
+		if (heredoc_init(data->heredoc, argv) == -1)
+			free_perror_exit(data, "heredoc_init", EXIT_FAILURE);
+	}
 	processes_init(data, argc, argv);
 	return (data);
 }

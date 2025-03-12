@@ -23,7 +23,8 @@ DEPS = $(SRCS:%.c=$(BUILD_DIR)/%.d)
 NAME_BONUS = pipex_bonus
 SRCS_DIR_BONUS = srcs_bonus
 SRCS_BONUS = main_bonus.c pipex_bonus.c processes_bonus.c pipes_bonus.c \
-		commands_bonus.c utils_bonus.c debug_bonus.c
+		heredoc_bonus.c commands_bonus.c utils_bonus.c debug_bonus.c \
+		get_next_line.c
 BUILD_DIR_BONUS = build_bonus
 OBJS_BONUS = $(SRCS_BONUS:%.c=$(BUILD_DIR_BONUS)/%.o)
 DEPS_BONUS = $(SRCS_BONUS:%.c=$(BUILD_DIR_BONUS)/%.d)

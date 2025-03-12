@@ -28,6 +28,12 @@ typedef struct s_cmd
 	char	**envp;
 }		t_cmd;
 
+typedef struct t_hdoc
+{
+	char	*limiter;
+	char	*filename;
+}		t_hdoc;
+
 typedef struct s_proc
 {
 	int		pipe_read_fd;
@@ -43,6 +49,8 @@ typedef struct s_pipex
 	t_proc	**processes;
 	int		pipes_count;
 	int		**pipes;
+	int		heredoc_enabled;
+	t_hdoc	*heredoc;
 	char	**envp;
 	int		active_child_processes;
 }		t_pipex;
@@ -64,6 +72,11 @@ int		**pipes_create(int n);
 int		pipes_close(int **pipes);
 void	pipes_free(int **pipes);
 
+/* Heredoc */
+t_hdoc	*heredoc_create(void);
+int		heredoc_init(t_hdoc *heredoc, char *argv[]);
+void	heredoc_free(t_hdoc *heredoc);
+
 /* Commands */
 char	*cmd_get_filename(char *cmd_name, char **envp);
 void	cmd_free(t_cmd *cmd);
@@ -75,5 +88,6 @@ void	free_perror_exit(t_pipex *data, char *message, int status);
 
 /* Debug */
 void	print_cmd(t_cmd *cmd);
+char	*get_next_line(int fd);
 
 #endif
