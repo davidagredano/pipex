@@ -31,11 +31,11 @@ int	processes_wait(t_pipex *data, int *status)
 	int	ret;
 
 	ret = 0;
-	while (data->active_child_processes > 0)
+	while (data->processes_active > 0)
 	{
 		if (wait(status) == -1)
 			ret = -1;
-		data->active_child_processes--;
+		data->processes_active--;
 	}
 	return (ret);
 }

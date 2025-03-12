@@ -45,6 +45,7 @@ typedef struct s_proc
 
 typedef struct s_pipex
 {
+	int		processes_active;
 	int		processes_count;
 	t_proc	**processes;
 	int		pipes_count;
@@ -52,7 +53,6 @@ typedef struct s_pipex
 	int		heredoc_enabled;
 	t_hdoc	*heredoc;
 	char	**envp;
-	int		active_child_processes;
 }		t_pipex;
 
 /* Pipex */

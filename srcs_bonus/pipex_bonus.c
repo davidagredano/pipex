@@ -26,13 +26,6 @@ void	pipex_free(t_pipex *data)
 	free(data);
 }
 
-int	pipex_perror_cleanup_exit(char *message, t_pipex *data, int status)
-{
-	perror(message);
-	pipex_cleanup(data);
-	exit(status);
-}
-
 int	pipex_cleanup(t_pipex *data)
 {
 	int	status;
@@ -51,6 +44,13 @@ int	pipex_cleanup(t_pipex *data)
 	if (WIFEXITED(status))
 		return (WEXITSTATUS(status));
 	return (EXIT_FAILURE);
+}
+
+int	pipex_perror_cleanup_exit(char *message, t_pipex *data, int status)
+{
+	perror(message);
+	pipex_cleanup(data);
+	exit(status);
 }
 
 t_pipex	*pipex_create(int argc, char *argv[], char *envp[])

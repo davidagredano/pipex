@@ -126,7 +126,7 @@ int	main(int argc, char *argv[], char *envp[])
 				free_perror_exit(data, "pipes_close", EXIT_FAILURE);
 			process_execute(data, cmd_create(data, data->processes[i]));
 		}
-		data->active_child_processes++;
+		data->processes_active++;
 		i++;
 	}
 	return (pipex_cleanup(data));
