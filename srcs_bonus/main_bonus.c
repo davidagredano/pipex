@@ -82,6 +82,8 @@ static void	process_redirect_stdin(t_pipex *data, t_proc *process)
 	if (process->infile)
 	{
 		fd = open(process->infile, O_RDONLY);
+		if (fd != -1 && data->heredoc_enabled && unlink(process->infile) == -1)
+			free_perror_exit(data, "unlink", EXIT_FAILURE);
 		if (fd == -1)
 		{
 			perror(process->infile);

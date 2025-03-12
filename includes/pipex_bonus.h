@@ -19,7 +19,7 @@
 # include <stdio.h>    // perror
 # include <stdlib.h>   // exit, free, EXIT_FAILURE
 # include <sys/wait.h> // wait
-# include <unistd.h>   // access, close, dup2, execve, fork, pipe
+# include <unistd.h>   // access, close, dup2, execve, fork, pipe, unlink
 
 typedef struct s_cmd
 {
