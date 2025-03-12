@@ -85,6 +85,5 @@ void	cleanup_exit(t_pipex *data, char *message, int status);
 int		cleanup(t_pipex *data);
 void	pipex_free(t_pipex *data);
 void	strs_free(char **strs);
-char	*get_next_line(int fd);
 
 #endif
