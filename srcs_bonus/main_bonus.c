@@ -57,7 +57,10 @@ static void	process_redirect_stdout(t_pipex *data, t_proc *process)
 
 	if (process->outfile)
 	{
-		fd = open(process->outfile, O_WRONLY | O_TRUNC | O_CREAT, 0644);
+		if (data->heredoc_enabled)
+			fd = open(process->outfile, O_WRONLY | O_APPEND | O_CREAT, 0644);
+		else
+			fd = open(process->outfile, O_WRONLY | O_TRUNC | O_CREAT, 0644);
 		if (fd == -1)
 			free_perror_exit(data, process->outfile, EXIT_FAILURE);
 		if (dup2(fd, STDOUT_FILENO) == -1)
