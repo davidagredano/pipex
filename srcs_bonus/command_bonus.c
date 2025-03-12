@@ -69,7 +69,7 @@ static char	*command_get_filename(char *command_name, char **envp)
 	char	**path_ptr;
 	char	*candidate;
 
-	if (access(command_name, X_OK) == 0)
+	if (ft_strchr(command_name, '/') && access(command_name, X_OK) == 0)
 		return (ft_strdup(command_name));
 	path_strs = get_path_strs(envp);
 	if (!path_strs)
