@@ -63,7 +63,7 @@ static char	**get_path_strs(char **envp)
 	return (NULL);
 }
 
-char	*command_get_filename(char *command_name, char **envp)
+static char	*command_get_filename(char *command_name, char **envp)
 {
 	char	**path_strs;
 	char	**path_ptr;
@@ -89,4 +89,33 @@ char	*command_get_filename(char *command_name, char **envp)
 		candidate = ft_strdup("command not found");
 	strs_free(path_strs);
 	return (candidate);
+}
+
+t_cmd	*command_create(char *command_str, char **envp)
+{
+	t_cmd	*command;
+
+	command = (t_cmd *) ft_calloc(1, sizeof(t_cmd));
+	if (!command)
+		return (NULL);
+	command->envp = envp;
+	command->argv = ft_split(command_str, ' ');
+	if (!command->argv)
+	{
+		command_free(command);
+		return (NULL);
+	}
+	command->filename = command_get_filename(command->argv[0], envp);
+	if (!command->filename)
+	{
+		command_free(command);
+		return (NULL);
+	}
+	if (ft_strcmp(command->filename, "command not found") == 0)
+	{
+		dprintf(STDERR_FILENO, "%s: command not found\n", command->argv[0]);
+		command_free(command);
+		exit(EXIT_COMMAND_NOT_FOUND);
+	}
+	return (command);
 }

@@ -15,7 +15,7 @@ LIBFT_DIR = libft
 
 NAME = pipex
 SRCS_DIR = srcs
-SRCS = main.c command.c utils.c
+SRCS = main.c process.c command.c utils.c
 BUILD_DIR = build
 OBJS = $(SRCS:%.c=$(BUILD_DIR)/%.o)
 DEPS = $(SRCS:%.c=$(BUILD_DIR)/%.d)

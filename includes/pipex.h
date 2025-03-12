@@ -28,8 +28,15 @@ typedef struct s_cmd
 	char	**envp;
 }		t_cmd;
 
+/* Process */
+void	process_child1(int pipe[2], char *infile, char *cmd_str, char *envp[]);
+void	process_child2(int pipe[2], char *outfile, char *cmd_str, char *envp[]);
+void	process_redirect_stdin(int pipe[2], char *infile);
+void	process_redirect_stdout(int pipe[2], char *outfile);
+void	process_execute(t_cmd *command);
+
 /* Commands */
-char	*command_get_filename(char *command_name, char **envp);
+t_cmd	*command_create(char *command_str, char **envp);
 void	command_free(t_cmd *command);
 
 /* Utils */
