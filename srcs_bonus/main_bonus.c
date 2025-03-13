@@ -32,7 +32,7 @@ static t_pipex	*pipex_create(int argc, char *argv[], char *envp[])
 
 	data = (t_pipex *) ft_calloc(1, sizeof(t_pipex));
 	if (!data)
-		cleanup_exit(data, "pipex_create", EXIT_FAILURE);
+		parent_cleanup_exit(data, "pipex_create");
 	heredoc_create(data, ft_strcmp(argv[1], "here_doc") == 0);
 	processes_create(data, argc - 3 - data->heredoc_enabled);
 	pipes_create(data, data->processes_count - 1);
@@ -76,17 +76,17 @@ int	main(int argc, char *argv[], char *envp[])
 	{
 		pid = fork();
 		if (pid == -1)
-			cleanup_exit(data, "fork", EXIT_FAILURE);
+			parent_cleanup_exit(data, "fork");
 		else if (pid == 0)
 		{
 			process_redirect_stdin(data, data->processes[i]);
 			process_redirect_stdout(data, data->processes[i]);
 			if (pipes_close(data->pipes) == -1)
-				cleanup_exit(data, "pipes_close", EXIT_FAILURE);
+				child_cleanup_exit(data, "pipes_close");
 			process_execute(data, command_create(data, data->processes[i]));
 		}
 		data->processes_active++;
 		i++;
 	}
-	return (cleanup(data));
+	return (parent_cleanup(data));
 }

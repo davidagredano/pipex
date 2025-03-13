@@ -60,17 +60,17 @@ void	pipes_create(t_pipex *data, int count)
 
 	data->pipes = (int **) ft_calloc(count + 1, sizeof(int *));
 	if (!data->pipes)
-		cleanup_exit(data, "pipes_create", EXIT_FAILURE);
+		parent_cleanup_exit(data, "pipes_create");
 	i = 0;
 	while (i < count)
 	{
 		data->pipes[i] = (int *) ft_calloc(2, sizeof(int));
 		if (!data->pipes[i])
-			cleanup_exit(data, "pipes_create", EXIT_FAILURE);
+			parent_cleanup_exit(data, "pipes_create");
 		if (pipe(data->pipes[i]) == -1)
 		{
 			free(data->pipes[i]);
-			cleanup_exit(data, "pipes_create", EXIT_FAILURE);
+			parent_cleanup_exit(data, "pipes_create");
 		}
 		i++;
 	}

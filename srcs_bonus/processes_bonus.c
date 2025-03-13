@@ -76,13 +76,13 @@ void	processes_create(t_pipex *data, int count)
 	data->processes_count = count;
 	data->processes = (t_proc **)ft_calloc(count + 1, sizeof(t_proc *));
 	if (!data->processes)
-		cleanup_exit(data, "processes_create", EXIT_FAILURE);
+		parent_cleanup_exit(data, "processes_create");
 	i = 0;
 	while (i < count)
 	{
 		data->processes[i] = (t_proc *)ft_calloc(1, sizeof(t_proc));
 		if (!data->processes[i])
-			cleanup_exit(data, "processes_create", EXIT_FAILURE);
+			parent_cleanup_exit(data, "processes_create");
 		data->processes[i]->pipe_read_fd = -1;
 		data->processes[i]->pipe_write_fd = -1;
 		i++;

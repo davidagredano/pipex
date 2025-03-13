@@ -27,13 +27,13 @@ void	heredoc_read_stdin(t_pipex *data)
 
 	fd = open(data->heredoc->filename, O_CREAT | O_WRONLY, 0600);
 	if (fd == -1)
-		cleanup_exit(data, "heredoc_read_stdin", EXIT_FAILURE);
+		parent_cleanup_exit(data, "heredoc_read_stdin");
 	ft_putstr_fd("> ", STDOUT_FILENO);
 	while (1)
 	{
 		line = get_next_line(STDIN_FILENO);
 		if (!line)
-			cleanup_exit(data, "heredoc_read_stdin", EXIT_FAILURE);
+			parent_cleanup_exit(data, "heredoc_read_stdin");
 		line[ft_strlen(line) - 1] = '\0';
 		if (ft_strcmp(line, data->heredoc->limiter) == 0)
 		{
@@ -45,7 +45,7 @@ void	heredoc_read_stdin(t_pipex *data)
 		ft_putstr_fd("> ", STDOUT_FILENO);
 	}
 	if (close(fd) == -1)
-		cleanup_exit(data, "heredoc_read_stdin", EXIT_FAILURE);
+		parent_cleanup_exit(data, "heredoc_read_stdin");
 }
 
 void	heredoc_init(t_pipex *data, char *argv[])
@@ -59,7 +59,7 @@ void	heredoc_init(t_pipex *data, char *argv[])
 	{
 		filename = ft_itoa(i);
 		if (filename == NULL)
-			cleanup_exit(data, "heredoc_init", EXIT_FAILURE);
+			parent_cleanup_exit(data, "heredoc_init");
 		if (access(filename, F_OK) == -1)
 		{
 			data->heredoc->filename = filename;
@@ -77,5 +77,5 @@ void	heredoc_create(t_pipex *data, int is_here_doc)
 	data->heredoc_enabled = is_here_doc;
 	data->heredoc = (t_hdoc *)ft_calloc(1, sizeof(t_hdoc));
 	if (!data->heredoc)
-		cleanup_exit(data, "heredoc_create", EXIT_FAILURE);
+		parent_cleanup_exit(data, "heredoc_create");
 }

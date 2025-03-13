@@ -32,7 +32,7 @@ void	print_error(char *str1, char *str2)
 	ft_putstr_fd(str2, STDERR_FILENO);
 }
 
-int	cleanup(t_pipex *data)
+int	parent_cleanup(t_pipex *data)
 {
 	int	status;
 	int	close_ret;
@@ -52,9 +52,22 @@ int	cleanup(t_pipex *data)
 	return (EXIT_FAILURE);
 }
 
-void	cleanup_exit(t_pipex *data, char *message, int status)
+void	parent_cleanup_exit(t_pipex *data, char *message)
 {
 	perror(message);
-	cleanup(data);
-	exit(status);
+	if (pipes_close(data->pipes) == -1)
+		perror("pipes_close");
+	if (processes_wait(data, NULL) == -1)
+		perror("processes_wait");
+	pipex_free(data);
+	exit(EXIT_FAILURE);
+}
+
+void	child_cleanup_exit(t_pipex *data, char *message)
+{
+	perror(message);
+	if (pipes_close(data->pipes) == -1)
+		perror("pipes_close");
+	pipex_free(data);
+	exit(EXIT_FAILURE);
 }
