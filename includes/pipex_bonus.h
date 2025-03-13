@@ -81,11 +81,10 @@ t_cmd	*command_create(t_pipex *data, t_proc *process);
 void	command_free(t_cmd *command);
 
 /* Utils */
-void	child_cleanup_exit(t_pipex *data, char *message);
+void	child_cleanup_exit(t_pipex *data, char *error_message, int exit_status);
 void	parent_cleanup_exit(t_pipex *data, char *message);
 int		parent_cleanup(t_pipex *data);
 void	pipex_free(t_pipex *data);
-void	print_error(char *str1, char *str2);
 void	strs_free(char **strs);
 
 #endif

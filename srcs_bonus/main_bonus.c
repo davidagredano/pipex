@@ -82,7 +82,7 @@ int	main(int argc, char *argv[], char *envp[])
 			process_redirect_stdin(data, data->processes[i]);
 			process_redirect_stdout(data, data->processes[i]);
 			if (pipes_close(data->pipes) == -1)
-				child_cleanup_exit(data, "pipes_close");
+				child_cleanup_exit(data, "pipes_close", EXIT_FAILURE);
 			process_execute(data, command_create(data, data->processes[i]));
 		}
 		data->processes_active++;

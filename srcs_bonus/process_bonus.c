@@ -17,7 +17,7 @@ void	process_execute(t_pipex *data, t_cmd *command)
 	if (execve(command->filename, command->argv, data->envp) == -1)
 	{
 		command_free(command);
-		child_cleanup_exit(data, "process_execute");
+		child_cleanup_exit(data, "process_execute", EXIT_FAILURE);
 	}
 }
 
@@ -32,16 +32,16 @@ void	process_redirect_stdout(t_pipex *data, t_proc *process)
 		else
 			fd = open(process->outfile, O_WRONLY | O_TRUNC | O_CREAT, 0644);
 		if (fd == -1)
-			child_cleanup_exit(data, process->outfile);
+			child_cleanup_exit(data, process->outfile, EXIT_FAILURE);
 		if (dup2(fd, STDOUT_FILENO) == -1)
-			child_cleanup_exit(data, "process_redirect_stdout");
+			child_cleanup_exit(data, "process_redirect_stdout", EXIT_FAILURE);
 		if (close(fd) == -1)
-			child_cleanup_exit(data, "process_redirect_stdout");
+			child_cleanup_exit(data, "process_redirect_stdout", EXIT_FAILURE);
 	}
 	else
 	{
 		if (dup2(process->pipe_write_fd, STDOUT_FILENO) == -1)
-			child_cleanup_exit(data, "process_redirect_stdout");
+			child_cleanup_exit(data, "process_redirect_stdout", EXIT_FAILURE);
 	}
 }
 
@@ -53,22 +53,22 @@ void	process_redirect_stdin(t_pipex *data, t_proc *process)
 	{
 		fd = open(process->infile, O_RDONLY);
 		if (fd != -1 && data->heredoc_enabled && unlink(process->infile) == -1)
-			child_cleanup_exit(data, "process_redirect_stdin");
+			child_cleanup_exit(data, "process_redirect_stdin", EXIT_FAILURE);
 		if (fd == -1)
 		{
 			perror(process->infile);
 			fd = open("/dev/null", O_RDONLY);
 			if (fd == -1)
-				child_cleanup_exit(data, "process_redirect_stdin");
+				child_cleanup_exit(data, "/dev/null", EXIT_FAILURE);
 		}
 		if (dup2(fd, STDIN_FILENO) == -1)
-			child_cleanup_exit(data, "process_redirect_stdin");
+			child_cleanup_exit(data, "process_redirect_stdin", EXIT_FAILURE);
 		if (close(fd) == -1)
-			child_cleanup_exit(data, "process_redirect_stdin");
+			child_cleanup_exit(data, "process_redirect_stdin", EXIT_FAILURE);
 	}
 	else
 	{
 		if (dup2(process->pipe_read_fd, STDIN_FILENO) == -1)
-			child_cleanup_exit(data, "process_redirect_stdin");
+			child_cleanup_exit(data, "process_redirect_stdin", EXIT_FAILURE);
 	}
 }

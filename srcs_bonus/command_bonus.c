@@ -96,32 +96,26 @@ t_cmd	*command_create(t_pipex *data, t_proc *process)
 	t_cmd	*command;
 
 	if (ft_strcmp(process->command_str, "") == 0)
-	{
-		print_error(process->command_str, ": command not found\n");
-		pipex_free(data);
-		exit(EXIT_COMMAND_NOT_FOUND);
-	}
+		child_cleanup_exit(data, "", EXIT_COMMAND_NOT_FOUND);
 	command = (t_cmd *) ft_calloc(1, sizeof(t_cmd));
 	if (!command)
-		child_cleanup_exit(data, "command_create");
+		child_cleanup_exit(data, "command_create", EXIT_FAILURE);
 	command->argv = ft_split(process->command_str, ' ');
 	if (!command->argv)
 	{
 		command_free(command);
-		child_cleanup_exit(data, "command_create");
+		child_cleanup_exit(data, "command_create", EXIT_FAILURE);
 	}
 	command->filename = command_get_filename(command->argv[0], data->envp);
 	if (!command->filename)
 	{
 		command_free(command);
-		child_cleanup_exit(data, "command_create");
+		child_cleanup_exit(data, "command_create", EXIT_FAILURE);
 	}
 	if (ft_strcmp(command->filename, "command not found") == 0)
 	{
-		print_error(process->command_str, ": command not found\n");
 		command_free(command);
-		pipex_free(data);
-		exit(EXIT_COMMAND_NOT_FOUND);
+		child_cleanup_exit(data, process->command_str, EXIT_COMMAND_NOT_FOUND);
 	}
 	return (command);
 }

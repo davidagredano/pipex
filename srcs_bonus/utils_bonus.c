@@ -26,12 +26,6 @@ void	strs_free(char **strs)
 	free(strs);
 }
 
-void	print_error(char *str1, char *str2)
-{
-	ft_putstr_fd(str1, STDERR_FILENO);
-	ft_putstr_fd(str2, STDERR_FILENO);
-}
-
 int	parent_cleanup(t_pipex *data)
 {
 	int	status;
@@ -63,11 +57,17 @@ void	parent_cleanup_exit(t_pipex *data, char *message)
 	exit(EXIT_FAILURE);
 }
 
-void	child_cleanup_exit(t_pipex *data, char *message)
+void	child_cleanup_exit(t_pipex *data, char *error_message, int exit_status)
 {
-	perror(message);
+	if (exit_status == EXIT_COMMAND_NOT_FOUND)
+	{
+		ft_putstr_fd(error_message, STDERR_FILENO);
+		ft_putstr_fd(": command not found\n", STDERR_FILENO);
+	}
+	else
+		perror(error_message);
 	if (pipes_close(data->pipes) == -1)
 		perror("pipes_close");
 	pipex_free(data);
-	exit(EXIT_FAILURE);
+	exit(exit_status);
 }
