@@ -32,9 +32,9 @@ int	parent_cleanup(t_pipex *data)
 	int	close_ret;
 	int	wait_ret;
 
-	close_ret = pipes_close(data->pipes);
+	close_ret = pipes_destroy(data);
 	if (close_ret == -1)
-		perror("pipes_close");
+		perror("pipes_destroy");
 	wait_ret = processes_wait(data, &status);
 	if (wait_ret == -1)
 		perror("processes_wait");
@@ -49,8 +49,8 @@ int	parent_cleanup(t_pipex *data)
 void	parent_cleanup_exit(t_pipex *data, char *message)
 {
 	perror(message);
-	if (pipes_close(data->pipes) == -1)
-		perror("pipes_close");
+	if (pipes_destroy(data) == -1)
+		perror("pipes_destroy");
 	if (processes_wait(data, NULL) == -1)
 		perror("processes_wait");
 	pipex_free(data);
@@ -66,8 +66,8 @@ void	child_cleanup_exit(t_pipex *data, char *error_message, int exit_status)
 	}
 	else
 		perror(error_message);
-	if (pipes_close(data->pipes) == -1)
-		perror("pipes_close");
+	if (pipes_destroy(data) == -1)
+		perror("pipes_destroy");
 	pipex_free(data);
 	exit(exit_status);
 }

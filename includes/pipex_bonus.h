@@ -67,8 +67,7 @@ void	process_execute(t_pipex *data, t_cmd *command);
 
 /* Pipes */
 void	pipes_create(t_pipex *data, int count);
-int		pipes_close(int **pipes);
-void	pipes_free(int **pipes);
+int		pipes_destroy(t_pipex *data);
 
 /* Heredoc */
 void	heredoc_create(t_pipex *data, int is_here_doc);

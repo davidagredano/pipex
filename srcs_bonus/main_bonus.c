@@ -19,8 +19,7 @@ void	pipex_free(t_pipex *data)
 		return ;
 	if (data->processes)
 		processes_free(data->processes);
-	if (data->pipes)
-		pipes_free(data->pipes);
+	pipes_destroy(data);
 	if (data->heredoc)
 		heredoc_free(data->heredoc);
 	free(data);
@@ -81,8 +80,8 @@ int	main(int argc, char *argv[], char *envp[])
 		{
 			process_redirect_stdin(data, data->processes[i]);
 			process_redirect_stdout(data, data->processes[i]);
-			if (pipes_close(data->pipes) == -1)
-				child_cleanup_exit(data, "pipes_close", EXIT_FAILURE);
+			if (pipes_destroy(data) == -1)
+				child_cleanup_exit(data, "pipes_destroy", EXIT_FAILURE);
 			process_execute(data, command_create(data, data->processes[i]));
 		}
 		data->processes_active++;

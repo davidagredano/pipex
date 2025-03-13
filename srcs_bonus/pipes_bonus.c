@@ -13,45 +13,29 @@
 #include "../includes/pipex_bonus.h"
 #include "../libft/libft.h"
 
-void	pipes_free(int **pipes)
+int	pipes_destroy(t_pipex *data)
 {
-	int	**ptr;
+	int	**pipes_ptr;
+	int	*pipe_fd;
+	int	return_value;
 
-	ptr = pipes;
-	while (*ptr)
+	if (!data->pipes)
+		return (0);
+	return_value = 0;
+	pipes_ptr = data->pipes;
+	while (*pipes_ptr)
 	{
-		free(*ptr);
-		ptr++;
+		pipe_fd = *pipes_ptr;
+		if (close(pipe_fd[0]) == -1)
+			return_value = -1;
+		if (close(pipe_fd[1]) == -1)
+			return_value = -1;
+		free(pipe_fd);
+		pipes_ptr++;
 	}
-	free(pipes);
-}
-
-int	pipes_close(int **pipes)
-{
-	int	**ptr;
-	int	ret;
-
-	ret = 0;
-	if (!pipes)
-		return (ret);
-	ptr = pipes;
-	while (*ptr)
-	{
-		if ((*ptr)[0] != -1)
-		{
-			if (close((*ptr)[0]) == -1)
-				ret = -1;
-		}
-		if ((*ptr)[1] != -1)
-		{
-			if (close((*ptr)[1]) == -1)
-				ret = -1;
-		}
-		ptr++;
-	}
-	if (ret == -1)
-		pipes_free(pipes);
-	return (ret);
+	free(data->pipes);
+	data->pipes = NULL;
+	return (return_value);
 }
 
 void	pipes_create(t_pipex *data, int count)
