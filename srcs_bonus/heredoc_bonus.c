@@ -34,7 +34,7 @@ void	heredoc_read_stdin(t_pipex *data)
 		line = get_next_line(STDIN_FILENO);
 		if (!line)
 			cleanup_exit(data, "heredoc_read_stdin", EXIT_FAILURE);
-		ft_strtok(line, "\n");
+		line[ft_strlen(line) - 1] = '\0';
 		if (ft_strcmp(line, data->heredoc->limiter) == 0)
 		{
 			free(line);
