@@ -112,7 +112,7 @@ t_cmd	*command_create(t_pipex *data, t_proc *process)
 	}
 	if (ft_strcmp(command->filename, "command not found") == 0)
 	{
-		print_error(command->filename, ": command not found\n");
+		print_error(process->command_str, ": command not found\n");
 		command_free(command);
 		pipex_free(data);
 		exit(EXIT_COMMAND_NOT_FOUND);
