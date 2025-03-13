@@ -65,7 +65,6 @@ static void	pipex_ensure_proper_usage(int argc, char *argv[])
 int	main(int argc, char *argv[], char *envp[])
 {
 	t_pipex	*data;
-	pid_t	pid;
 	int		i;
 
 	pipex_ensure_proper_usage(argc, argv);
@@ -73,10 +72,10 @@ int	main(int argc, char *argv[], char *envp[])
 	i = 0;
 	while (i < data->processes_count)
 	{
-		pid = fork();
-		if (pid == -1)
+		data->processes[i]->pid = fork();
+		if (data->processes[i]->pid == -1)
 			parent_cleanup_exit(data, "fork");
-		else if (pid == 0)
+		else if (data->processes[i]->pid == 0)
 		{
 			process_redirect_stdin(data, data->processes[i]);
 			process_redirect_stdout(data, data->processes[i]);
@@ -84,7 +83,6 @@ int	main(int argc, char *argv[], char *envp[])
 				child_cleanup_exit(data, "pipes_destroy", EXIT_FAILURE);
 			process_execute(data, command_create(data, data->processes[i]));
 		}
-		data->processes_active++;
 		i++;
 	}
 	return (parent_cleanup(data));

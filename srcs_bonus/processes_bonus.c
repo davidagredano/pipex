@@ -29,15 +29,15 @@ void	processes_free(t_proc **processes)
 int	processes_wait(t_pipex *data, int *status)
 {
 	int	ret;
+	int	i;
 
 	ret = 0;
-	if (data->processes_active == 0)
-		return (ret);
-	while (data->processes_active > 0)
+	i = 0;
+	while (data->processes[i] && data->processes[i]->pid)
 	{
-		if (wait(status) == -1)
+		if (waitpid(data->processes[i]->pid, status, 0) == -1)
 			ret = -1;
-		data->processes_active--;
+		i++;
 	}
 	return (ret);
 }
