@@ -32,7 +32,7 @@ void	process_redirect_stdout(t_pipex *data, t_proc *process)
 		else
 			fd = open(process->outfile, O_WRONLY | O_TRUNC | O_CREAT, 0644);
 		if (fd == -1)
-			cleanup_exit(data, "process_redirect_stdout", EXIT_FAILURE);
+			cleanup_exit(data, process->outfile, EXIT_FAILURE);
 		if (dup2(fd, STDOUT_FILENO) == -1)
 			cleanup_exit(data, "process_redirect_stdout", EXIT_FAILURE);
 		if (close(fd) == -1)
