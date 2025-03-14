@@ -6,7 +6,7 @@
 /*   By: dagredan <dagredan@student.42barcelona.co  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/04 12:40:31 by dagredan          #+#    #+#             */
-/*   Updated: 2025/03/12 23:59:51 by dagredan         ###   ########.fr       */
+/*   Updated: 2025/03/14 09:52:05 by dagredan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,7 +69,7 @@ static char	*command_get_filename(char *command_name, char **envp)
 	char	**path_ptr;
 	char	*candidate;
 
-	if (access(command_name, X_OK) == 0)
+	if (ft_strchr(command_name, '/') && access(command_name, X_OK) == 0)
 		return (ft_strdup(command_name));
 	path_strs = get_path_strs(envp);
 	if (!path_strs)
@@ -91,31 +91,31 @@ static char	*command_get_filename(char *command_name, char **envp)
 	return (candidate);
 }
 
-t_cmd	*command_create(char *command_str, char **envp)
+t_cmd	*command_create(t_pipex *data, t_proc *process)
 {
 	t_cmd	*command;
 
+	if (ft_strcmp(process->command_str, "") == 0)
+		child_cleanup_exit(data, "", EXIT_COMMAND_NOT_FOUND);
 	command = (t_cmd *) ft_calloc(1, sizeof(t_cmd));
 	if (!command)
-		return (NULL);
-	command->envp = envp;
-	command->argv = ft_split(command_str, ' ');
+		child_cleanup_exit(data, "command_create", EXIT_FAILURE);
+	command->argv = ft_split(process->command_str, ' ');
 	if (!command->argv)
 	{
 		command_free(command);
-		return (NULL);
+		child_cleanup_exit(data, "command_create", EXIT_FAILURE);
 	}
-	command->filename = command_get_filename(command->argv[0], envp);
+	command->filename = command_get_filename(command->argv[0], data->envp);
 	if (!command->filename)
 	{
 		command_free(command);
-		return (NULL);
+		child_cleanup_exit(data, "command_create", EXIT_FAILURE);
 	}
 	if (ft_strcmp(command->filename, "command not found") == 0)
 	{
-		print_error(command->filename, ": command not found\n");
 		command_free(command);
-		exit(EXIT_COMMAND_NOT_FOUND);
+		child_cleanup_exit(data, process->command_str, EXIT_COMMAND_NOT_FOUND);
 	}
 	return (command);
 }

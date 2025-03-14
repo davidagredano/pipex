@@ -5,85 +5,65 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: dagredan <dagredan@student.42barcelona.co  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/03/12 19:55:40 by dagredan          #+#    #+#             */
-/*   Updated: 2025/03/12 23:59:36 by dagredan         ###   ########.fr       */
+/*   Created: 2025/03/12 14:21:25 by dagredan          #+#    #+#             */
+/*   Updated: 2025/03/14 09:52:39 by dagredan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/pipex.h"
 
-void	process_execute(t_cmd *command)
+void	process_execute(t_pipex *data, t_cmd *command)
 {
-	if (!command)
-		perror_exit("command_create", EXIT_FAILURE);
-	if (execve(command->filename, command->argv, command->envp) == -1)
+	if (execve(command->filename, command->argv, data->envp) == -1)
 	{
 		command_free(command);
-		perror_exit("execve", EXIT_FAILURE);
+		child_cleanup_exit(data, "process_execute", EXIT_FAILURE);
 	}
 }
 
-void	process_redirect_stdout(int pipe[2], char *outfile)
+void	process_redirect_stdout(t_pipex *data, t_proc *process)
 {
 	int	fd;
 
-	if (outfile)
+	if (process->outfile)
 	{
-		fd = open(outfile, O_WRONLY | O_TRUNC | O_CREAT, 0644);
+		fd = open(process->outfile, O_WRONLY | O_TRUNC | O_CREAT, 0644);
 		if (fd == -1)
-			perror_exit(outfile, EXIT_FAILURE);
+			child_cleanup_exit(data, process->outfile, EXIT_FAILURE);
 		if (dup2(fd, STDOUT_FILENO) == -1)
-			perror_exit("dup2", EXIT_FAILURE);
+			child_cleanup_exit(data, "process_redirect_stdout", EXIT_FAILURE);
 		if (close(fd) == -1)
-			perror_exit("close", EXIT_FAILURE);
+			child_cleanup_exit(data, "process_redirect_stdout", EXIT_FAILURE);
 	}
 	else
 	{
-		if (dup2(pipe[1], STDOUT_FILENO) == -1)
-			perror_exit("dup2", EXIT_FAILURE);
+		if (dup2(process->pipe_write_fd, STDOUT_FILENO) == -1)
+			child_cleanup_exit(data, "process_redirect_stdout", EXIT_FAILURE);
 	}
-	if (close(pipe[1]) == -1)
-		perror_exit("close", EXIT_FAILURE);
 }
 
-void	process_redirect_stdin(int pipe[2], char *infile)
+void	process_redirect_stdin(t_pipex *data, t_proc *process)
 {
 	int	fd;
 
-	if (infile)
+	if (process->infile)
 	{
-		fd = open(infile, O_RDONLY);
+		fd = open(process->infile, O_RDONLY);
 		if (fd == -1)
 		{
-			perror(infile);
+			perror(process->infile);
 			fd = open("/dev/null", O_RDONLY);
 			if (fd == -1)
-				perror_exit("/dev/null", EXIT_FAILURE);
+				child_cleanup_exit(data, "/dev/null", EXIT_FAILURE);
 		}
 		if (dup2(fd, STDIN_FILENO) == -1)
-			perror_exit("dup2", EXIT_FAILURE);
+			child_cleanup_exit(data, "process_redirect_stdin", EXIT_FAILURE);
 		if (close(fd) == -1)
-			perror_exit("close", EXIT_FAILURE);
+			child_cleanup_exit(data, "process_redirect_stdin", EXIT_FAILURE);
 	}
 	else
 	{
-		if (dup2(pipe[0], STDIN_FILENO) == -1)
-			perror_exit("dup2", EXIT_FAILURE);
+		if (dup2(process->pipe_read_fd, STDIN_FILENO) == -1)
+			child_cleanup_exit(data, "process_redirect_stdin", EXIT_FAILURE);
 	}
-	if (close(pipe[0]) == -1)
-		perror_exit("close", EXIT_FAILURE);
-}
-
-void	process_child2(int pipe[2], char *outfile, char *cmd_str, char *envp[])
-{
-	process_redirect_stdin(pipe, NULL);
-	process_redirect_stdout(pipe, outfile);
-	process_execute(command_create(cmd_str, envp));
-}
-
-void	process_child1(int pipe[2], char *infile, char *cmd_str, char *envp[])
-{
-	process_redirect_stdin(pipe, infile);
-	process_redirect_stdout(pipe, NULL);
-	process_execute(command_create(cmd_str, envp));
 }

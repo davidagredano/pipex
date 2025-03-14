@@ -6,7 +6,7 @@
 /*   By: dagredan <dagredan@student.42barcelona.co  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/03 11:37:19 by dagredan          #+#    #+#             */
-/*   Updated: 2025/03/08 12:52:49 by dagredan         ###   ########.fr       */
+/*   Updated: 2025/03/14 09:40:18 by dagredan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,8 +17,8 @@
 
 # include <fcntl.h>    // open
 # include <stdio.h>    // perror
-# include <stdlib.h>   // exit, free, EXIT_FAILURE
-# include <sys/wait.h> // wait
+# include <stdlib.h>   // exit, free
+# include <sys/wait.h> // waitpid
 # include <unistd.h>   // access, close, dup2, execve, fork, pipe
 
 typedef struct s_cmd
@@ -28,22 +28,48 @@ typedef struct s_cmd
 	char	**envp;
 }		t_cmd;
 
-/* Process */
-void	process_child1(int pipe[2], char *infile, char *cmd_str, char *envp[]);
-void	process_child2(int pipe[2], char *outfile, char *cmd_str, char *envp[]);
-void	process_redirect_stdin(int pipe[2], char *infile);
-void	process_redirect_stdout(int pipe[2], char *outfile);
-void	process_execute(t_cmd *command);
+typedef struct s_proc
+{
+	pid_t	pid;
+	int		pipe_read_fd;
+	int		pipe_write_fd;
+	char	*infile;
+	char	*outfile;
+	char	*command_str;
+}		t_proc;
 
-/* Commands */
-t_cmd	*command_create(char *command_str, char **envp);
+typedef struct s_pipex
+{
+	int		processes_count;
+	t_proc	**processes;
+	int		**pipes;
+	char	**envp;
+}		t_pipex;
+
+/* Processes */
+void	processes_create(t_pipex *data, int count);
+void	processes_init(t_pipex *data, int argc, char *argv[]);
+int		processes_wait(t_pipex *data, int *status);
+void	processes_free(t_proc **processes);
+
+/* Process */
+void	process_redirect_stdin(t_pipex *data, t_proc *process);
+void	process_redirect_stdout(t_pipex *data, t_proc *process);
+void	process_execute(t_pipex *data, t_cmd *command);
+
+/* Pipes */
+void	pipes_create(t_pipex *data, int count);
+int		pipes_destroy(t_pipex *data);
+
+/* Command */
+t_cmd	*command_create(t_pipex *data, t_proc *process);
 void	command_free(t_cmd *command);
 
 /* Utils */
+void	child_cleanup_exit(t_pipex *data, char *error_message, int exit_status);
+void	parent_cleanup_exit(t_pipex *data, char *message);
+int		parent_cleanup(t_pipex *data);
+void	pipex_free(t_pipex *data);
 void	strs_free(char **strs);
-void	cleanup_partial(int pipefd[2]);
-int		cleanup(int pipefd[2]);
-void	perror_exit(char *message, int status);
-void	print_error(char *str1, char *str2);
 
 #endif
