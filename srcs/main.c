@@ -6,7 +6,7 @@
 /*   By: dagredan <dagredan@student.42barcelona.co  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/03 11:53:33 by dagredan          #+#    #+#             */
-/*   Updated: 2025/03/14 09:52:14 by dagredan         ###   ########.fr       */
+/*   Updated: 2025/03/14 10:01:31 by dagredan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,7 @@ void	pipex_free(t_pipex *data)
 static t_pipex	*pipex_create(int argc, char *argv[], char *envp[])
 {
 	t_pipex	*data;
+
 	data = (t_pipex *) ft_calloc(1, sizeof(t_pipex));
 	if (!data)
 		parent_cleanup_exit(data, "pipex_create");
