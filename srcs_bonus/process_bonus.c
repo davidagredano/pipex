@@ -6,7 +6,7 @@
 /*   By: dagredan <dagredan@student.42barcelona.co  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/12 14:21:25 by dagredan          #+#    #+#             */
-/*   Updated: 2025/03/13 00:01:53 by dagredan         ###   ########.fr       */
+/*   Updated: 2025/03/14 08:42:41 by dagredan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,8 +52,6 @@ void	process_redirect_stdin(t_pipex *data, t_proc *process)
 	if (process->infile)
 	{
 		fd = open(process->infile, O_RDONLY);
-		if (fd != -1 && data->heredoc_enabled && unlink(process->infile) == -1)
-			child_cleanup_exit(data, "process_redirect_stdin", EXIT_FAILURE);
 		if (fd == -1)
 		{
 			perror(process->infile);

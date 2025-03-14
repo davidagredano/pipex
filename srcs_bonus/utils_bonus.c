@@ -6,7 +6,7 @@
 /*   By: dagredan <dagredan@student.42barcelona.co  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/03 17:12:33 by dagredan          #+#    #+#             */
-/*   Updated: 2025/03/13 00:02:05 by dagredan         ###   ########.fr       */
+/*   Updated: 2025/03/14 08:50:12 by dagredan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,6 +32,11 @@ int	parent_cleanup(t_pipex *data)
 	int	close_ret;
 	int	wait_ret;
 
+	if (data->heredoc_enabled && access(data->heredoc->filename, F_OK) == 0)
+	{
+		if (unlink(data->heredoc->filename) == -1)
+			perror(data->heredoc->filename);
+	}
 	close_ret = pipes_destroy(data);
 	if (close_ret == -1)
 		perror("pipes_destroy");
@@ -49,6 +54,11 @@ int	parent_cleanup(t_pipex *data)
 void	parent_cleanup_exit(t_pipex *data, char *message)
 {
 	perror(message);
+	if (data->heredoc_enabled && access(data->heredoc->filename, F_OK) == 0)
+	{
+		if (unlink(data->heredoc->filename) == -1)
+			perror(data->heredoc->filename);
+	}
 	if (pipes_destroy(data) == -1)
 		perror("pipes_destroy");
 	if (processes_wait(data, NULL) == -1)
