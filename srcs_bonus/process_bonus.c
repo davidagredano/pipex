@@ -6,16 +6,27 @@
 /*   By: dagredan <dagredan@student.42barcelona.co  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/12 14:21:25 by dagredan          #+#    #+#             */
-/*   Updated: 2025/03/18 12:18:48 by dagredan         ###   ########.fr       */
+/*   Updated: 2025/03/18 13:59:36 by dagredan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/pipex_bonus.h"
 
-void	process_execute(t_pipex *data, t_cmd *command)
+void	process_execute(t_pipex *data, t_proc *process)
 {
+	t_cmd	*command;
+	char	*command_str;
+
+	command = process->command;
 	if (execve(command->filename, command->argv, data->envp) == -1)
-		child_cleanup_exit(data, "process_execute", EXIT_FAILURE);
+	{
+		command_str = process->command_str;
+		if (access(command->filename, F_OK) == -1)
+			child_cleanup_exit(data, command_str, EXIT_COMMAND_NOT_FOUND);
+		else if (access(command->filename, X_OK) == -1)
+			child_cleanup_exit(data, command_str, EXIT_PERMISSION_DENIED);
+		child_cleanup_exit(data, command_str, EXIT_FAILURE);
+	}
 }
 
 void	process_redirect_stdout(t_pipex *data, t_proc *process)

@@ -6,7 +6,7 @@
 /*   By: dagredan <dagredan@student.42barcelona.co  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/04 12:40:31 by dagredan          #+#    #+#             */
-/*   Updated: 2025/03/18 12:07:37 by dagredan         ###   ########.fr       */
+/*   Updated: 2025/03/18 14:09:42 by dagredan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,7 +69,7 @@ static char	*command_get_filename(char *command_name, char **envp)
 	char	**path_ptr;
 	char	*candidate;
 
-	if (ft_strchr(command_name, '/') && access(command_name, X_OK) == 0)
+	if (ft_strchr(command_name, '/') && access(command_name, F_OK) == 0)
 		return (ft_strdup(command_name));
 	path_strs = get_path_strs(envp);
 	if (!path_strs)
@@ -80,13 +80,13 @@ static char	*command_get_filename(char *command_name, char **envp)
 		candidate = path_join(*path_ptr, command_name);
 		if (!candidate)
 			break ;
-		else if (access(candidate, X_OK) == 0)
+		else if (access(candidate, F_OK) == 0)
 			break ;
 		free(candidate);
 		path_ptr++;
 	}
 	if (*path_ptr == NULL)
-		candidate = ft_strdup("command not found");
+		candidate = ft_strdup(command_name);
 	strs_free(path_strs);
 	return (candidate);
 }
@@ -107,7 +107,5 @@ t_cmd	*command_create(t_pipex *data, t_proc *process)
 	command->filename = command_get_filename(command->argv[0], data->envp);
 	if (!command->filename)
 		child_cleanup_exit(data, "command_create", EXIT_FAILURE);
-	if (ft_strcmp(command->filename, "command not found") == 0)
-		child_cleanup_exit(data, process->command_str, EXIT_COMMAND_NOT_FOUND);
 	return (command);
 }
