@@ -6,7 +6,7 @@
 /*   By: dagredan <dagredan@student.42barcelona.co  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/04 12:40:31 by dagredan          #+#    #+#             */
-/*   Updated: 2025/03/14 09:46:54 by dagredan         ###   ########.fr       */
+/*   Updated: 2025/03/18 12:07:37 by dagredan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,22 +100,14 @@ t_cmd	*command_create(t_pipex *data, t_proc *process)
 	command = (t_cmd *) ft_calloc(1, sizeof(t_cmd));
 	if (!command)
 		child_cleanup_exit(data, "command_create", EXIT_FAILURE);
+	process->command = command;
 	command->argv = ft_split(process->command_str, ' ');
 	if (!command->argv)
-	{
-		command_free(command);
 		child_cleanup_exit(data, "command_create", EXIT_FAILURE);
-	}
 	command->filename = command_get_filename(command->argv[0], data->envp);
 	if (!command->filename)
-	{
-		command_free(command);
 		child_cleanup_exit(data, "command_create", EXIT_FAILURE);
-	}
 	if (ft_strcmp(command->filename, "command not found") == 0)
-	{
-		command_free(command);
 		child_cleanup_exit(data, process->command_str, EXIT_COMMAND_NOT_FOUND);
-	}
 	return (command);
 }

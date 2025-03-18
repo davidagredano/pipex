@@ -6,7 +6,7 @@
 /*   By: dagredan <dagredan@student.42barcelona.co  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/12 14:21:25 by dagredan          #+#    #+#             */
-/*   Updated: 2025/03/14 08:42:41 by dagredan         ###   ########.fr       */
+/*   Updated: 2025/03/18 12:18:48 by dagredan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,10 +15,7 @@
 void	process_execute(t_pipex *data, t_cmd *command)
 {
 	if (execve(command->filename, command->argv, data->envp) == -1)
-	{
-		command_free(command);
 		child_cleanup_exit(data, "process_execute", EXIT_FAILURE);
-	}
 }
 
 void	process_redirect_stdout(t_pipex *data, t_proc *process)
