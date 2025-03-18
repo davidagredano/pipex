@@ -6,7 +6,7 @@
 /*   By: dagredan <dagredan@student.42barcelona.co  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/03 11:37:19 by dagredan          #+#    #+#             */
-/*   Updated: 2025/03/18 13:55:53 by dagredan         ###   ########.fr       */
+/*   Updated: 2025/03/18 14:59:05 by dagredan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,7 +78,7 @@ void	heredoc_read_stdin(t_pipex *data);
 void	heredoc_free(t_hdoc *heredoc);
 
 /* Command */
-t_cmd	*command_create(t_pipex *data, t_proc *process);
+void	command_create(t_pipex *data, t_proc *process);
 void	command_free(t_cmd *command);
 
 /* Utils */

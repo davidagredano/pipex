@@ -6,7 +6,7 @@
 /*   By: dagredan <dagredan@student.42barcelona.co  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/10 18:45:33 by dagredan          #+#    #+#             */
-/*   Updated: 2025/03/14 09:52:42 by dagredan         ###   ########.fr       */
+/*   Updated: 2025/03/18 16:00:22 by dagredan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,8 @@ void	processes_free(t_proc **processes)
 	ptr = processes;
 	while (*ptr)
 	{
+		if ((*ptr)->command)
+			command_free((*ptr)->command);
 		free(*ptr);
 		ptr++;
 	}

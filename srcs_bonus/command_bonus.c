@@ -6,7 +6,7 @@
 /*   By: dagredan <dagredan@student.42barcelona.co  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/04 12:40:31 by dagredan          #+#    #+#             */
-/*   Updated: 2025/03/18 14:09:42 by dagredan         ###   ########.fr       */
+/*   Updated: 2025/03/18 15:09:34 by dagredan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,7 +91,7 @@ static char	*command_get_filename(char *command_name, char **envp)
 	return (candidate);
 }
 
-t_cmd	*command_create(t_pipex *data, t_proc *process)
+void	command_create(t_pipex *data, t_proc *process)
 {
 	t_cmd	*command;
 
@@ -107,5 +107,4 @@ t_cmd	*command_create(t_pipex *data, t_proc *process)
 	command->filename = command_get_filename(command->argv[0], data->envp);
 	if (!command->filename)
 		child_cleanup_exit(data, "command_create", EXIT_FAILURE);
-	return (command);
 }

@@ -6,7 +6,7 @@
 /*   By: dagredan <dagredan@student.42barcelona.co  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/03 11:53:33 by dagredan          #+#    #+#             */
-/*   Updated: 2025/03/14 10:01:31 by dagredan         ###   ########.fr       */
+/*   Updated: 2025/03/18 15:12:35 by dagredan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,7 +57,8 @@ int	main(int argc, char *argv[], char *envp[])
 			process_redirect_stdout(data, data->processes[i]);
 			if (pipes_destroy(data) == -1)
 				child_cleanup_exit(data, "pipes_destroy", EXIT_FAILURE);
-			process_execute(data, command_create(data, data->processes[i]));
+			command_create(data, data->processes[i]);
+			process_execute(data, data->processes[i]);
 		}
 		i++;
 	}
