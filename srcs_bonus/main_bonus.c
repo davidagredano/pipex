@@ -6,7 +6,7 @@
 /*   By: dagredan <dagredan@student.42barcelona.co  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/03 11:53:33 by dagredan          #+#    #+#             */
-/*   Updated: 2025/03/18 13:42:47 by dagredan         ###   ########.fr       */
+/*   Updated: 2025/03/18 22:18:29 by dagredan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,8 @@ void	pipex_free(t_pipex *data)
 {
 	if (!data)
 		return ;
+	if (data->path_dirs)
+		path_dirs_free(data->path_dirs);
 	if (data->processes)
 		processes_free(data->processes);
 	pipes_destroy(data);
@@ -32,10 +34,11 @@ static t_pipex	*pipex_create(int argc, char *argv[], char *envp[])
 	data = (t_pipex *) ft_calloc(1, sizeof(t_pipex));
 	if (!data)
 		parent_cleanup_exit(data, "pipex_create");
+	data->envp = envp;
+	path_dirs_create(data, envp);
 	heredoc_create(data, ft_strcmp(argv[1], "here_doc") == 0);
 	processes_create(data, argc - 3 - data->heredoc_enabled);
 	pipes_create(data, data->processes_count - 1);
-	data->envp = envp;
 	if (data->heredoc_enabled)
 	{
 		heredoc_init(data, argv);

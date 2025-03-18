@@ -15,7 +15,7 @@ LIBFT_DIR = libft
 
 NAME = pipex
 SRCS_DIR = srcs
-SRCS = main.c processes.c process.c pipes.c command.c utils.c
+SRCS = main.c processes.c process.c pipes.c command.c path_dirs.c utils.c
 BUILD_DIR = build
 OBJS = $(SRCS:%.c=$(BUILD_DIR)/%.o)
 DEPS = $(SRCS:%.c=$(BUILD_DIR)/%.d)
@@ -23,7 +23,7 @@ DEPS = $(SRCS:%.c=$(BUILD_DIR)/%.d)
 NAME_BONUS = pipex_bonus
 SRCS_DIR_BONUS = srcs_bonus
 SRCS_BONUS = main_bonus.c processes_bonus.c process_bonus.c pipes_bonus.c \
-		heredoc_bonus.c command_bonus.c utils_bonus.c
+		heredoc_bonus.c command_bonus.c path_dirs_bonus.c utils_bonus.c
 BUILD_DIR_BONUS = build_bonus
 OBJS_BONUS = $(SRCS_BONUS:%.c=$(BUILD_DIR_BONUS)/%.o)
 DEPS_BONUS = $(SRCS_BONUS:%.c=$(BUILD_DIR_BONUS)/%.d)

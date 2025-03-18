@@ -6,7 +6,7 @@
 /*   By: dagredan <dagredan@student.42barcelona.co  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/04 12:40:31 by dagredan          #+#    #+#             */
-/*   Updated: 2025/03/18 20:47:18 by dagredan         ###   ########.fr       */
+/*   Updated: 2025/03/18 22:21:59 by dagredan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,32 +49,14 @@ static char	*path_join(char *path, char *filename)
 	return (new_str);
 }
 
-static char	**get_path_strs(char **envp)
+static char	*command_get_filename(t_pipex *data, char *command_name)
 {
-	char	**env_ptr;
-
-	env_ptr = envp;
-	while (env_ptr && *env_ptr)
-	{
-		if (ft_strncmp(*env_ptr, "PATH=", 5) == 0)
-			return (ft_split(*env_ptr + 5, ':'));
-		env_ptr++;
-	}
-	return (ft_split(DEF_PATH, ':'));
-}
-
-static char	*command_get_filename(char *command_name, char **envp)
-{
-	char	**path_strs;
 	char	**path_ptr;
 	char	*candidate;
 
 	if (ft_strchr(command_name, '/') && access(command_name, F_OK) == 0)
 		return (ft_strdup(command_name));
-	path_strs = get_path_strs(envp);
-	if (!path_strs)
-		return (NULL);
-	path_ptr = path_strs;
+	path_ptr = data->path_dirs;
 	while (*path_ptr)
 	{
 		candidate = path_join(*path_ptr, command_name);
@@ -87,7 +69,6 @@ static char	*command_get_filename(char *command_name, char **envp)
 	}
 	if (*path_ptr == NULL)
 		candidate = ft_strdup(command_name);
-	strs_free(path_strs);
 	return (candidate);
 }
 
@@ -104,7 +85,7 @@ void	command_create(t_pipex *data, t_proc *process)
 	command->argv = ft_split(process->command_str, ' ');
 	if (!command->argv)
 		child_cleanup_exit(data, "command_create", EXIT_FAILURE);
-	command->filename = command_get_filename(command->argv[0], data->envp);
+	command->filename = command_get_filename(data, command->argv[0]);
 	if (!command->filename)
 		child_cleanup_exit(data, "command_create", EXIT_FAILURE);
 }
