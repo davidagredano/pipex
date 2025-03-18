@@ -6,7 +6,7 @@
 /*   By: dagredan <dagredan@student.42barcelona.co  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/04 12:40:31 by dagredan          #+#    #+#             */
-/*   Updated: 2025/03/18 15:55:24 by dagredan         ###   ########.fr       */
+/*   Updated: 2025/03/18 20:53:31 by dagredan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,13 +54,13 @@ static char	**get_path_strs(char **envp)
 	char	**env_ptr;
 
 	env_ptr = envp;
-	while (*env_ptr)
+	while (env_ptr && *env_ptr)
 	{
 		if (ft_strncmp(*env_ptr, "PATH=", 5) == 0)
 			return (ft_split(*env_ptr + 5, ':'));
 		env_ptr++;
 	}
-	return (NULL);
+	return (ft_split(DEF_PATH, ':'));
 }
 
 static char	*command_get_filename(char *command_name, char **envp)
