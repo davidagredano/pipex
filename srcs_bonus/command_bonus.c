@@ -6,7 +6,7 @@
 /*   By: dagredan <dagredan@student.42barcelona.co  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/04 12:40:31 by dagredan          #+#    #+#             */
-/*   Updated: 2025/03/18 22:21:59 by dagredan         ###   ########.fr       */
+/*   Updated: 2025/03/19 18:16:38 by dagredan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,7 +82,7 @@ void	command_create(t_pipex *data, t_proc *process)
 	if (!command)
 		child_cleanup_exit(data, "command_create", EXIT_FAILURE);
 	process->command = command;
-	command->argv = ft_split(process->command_str, ' ');
+	command->argv = command_parse_argv(process->command_str, " \"'", "\"'");
 	if (!command->argv)
 		child_cleanup_exit(data, "command_create", EXIT_FAILURE);
 	command->filename = command_get_filename(data, command->argv[0]);
