@@ -6,7 +6,7 @@
 /*   By: dagredan <dagredan@student.42barcelona.co  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/04 12:40:31 by dagredan          #+#    #+#             */
-/*   Updated: 2025/03/20 02:01:38 by dagredan         ###   ########.fr       */
+/*   Updated: 2025/03/20 20:45:30 by dagredan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,7 +77,7 @@ void	command_create(t_pipex *data, t_proc *process)
 	t_cmd	*command;
 
 	if (ft_strcmp(process->command_str, "") == 0)
-		child_cleanup_exit(data, "", EXIT_PERMISSION_DENIED);
+		child_cleanup_exit(data, "", EXIT_COMMAND_NOT_FOUND);
 	command = (t_cmd *) ft_calloc(1, sizeof(t_cmd));
 	if (!command)
 		child_cleanup_exit(data, "command_create", EXIT_FAILURE);
