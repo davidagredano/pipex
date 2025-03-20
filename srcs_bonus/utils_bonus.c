@@ -6,7 +6,7 @@
 /*   By: dagredan <dagredan@student.42barcelona.co  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/03 17:12:33 by dagredan          #+#    #+#             */
-/*   Updated: 2025/03/20 20:28:36 by dagredan         ###   ########.fr       */
+/*   Updated: 2025/03/20 21:13:03 by dagredan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,11 +60,6 @@ void	child_cleanup_exit(t_pipex *data, char *error_message, int exit_status)
 	{
 		ft_putstr_fd(error_message, STDERR_FILENO);
 		ft_putstr_fd(": command not found\n", STDERR_FILENO);
-	}
-	else if (exit_status == EXIT_PERMISSION_DENIED)
-	{
-		ft_putstr_fd("permission denied: ", STDERR_FILENO);
-		ft_putendl_fd(error_message, STDERR_FILENO);
 	}
 	else
 		perror(error_message);

@@ -6,7 +6,7 @@
 /*   By: dagredan <dagredan@student.42barcelona.co  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/12 14:21:25 by dagredan          #+#    #+#             */
-/*   Updated: 2025/03/18 14:39:39 by dagredan         ###   ########.fr       */
+/*   Updated: 2025/03/20 21:15:06 by dagredan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ void	process_execute(t_pipex *data, t_proc *process)
 		if (access(command->filename, F_OK) == -1)
 			child_cleanup_exit(data, command_str, EXIT_COMMAND_NOT_FOUND);
 		else if (access(command->filename, X_OK) == -1)
-			child_cleanup_exit(data, command_str, EXIT_PERMISSION_DENIED);
+			child_cleanup_exit(data, command->filename, EXIT_PERMISSION_DENIED);
 		child_cleanup_exit(data, command_str, EXIT_FAILURE);
 	}
 }
